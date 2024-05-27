@@ -18,14 +18,14 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	//Param�tres de l'�cran
 	final int ORIGINAL_TILE_SIZE = 16; 							// une tuile de taille 16x16
-	final int SCALE = 1; 										// �chelle utilis�e pour agrandir l'affichage
+	final int SCALE = 3; 										// �chelle utilis�e pour agrandir l'affichage
 	public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; 	// 48x48
 	public final int MAX_SCREEN_COL = 71;
 	public final int MAX_SCREEN_ROW = 49; 					 	// ces valeurs donnent une r�solution 4:3
 	public final int SCREEN_WIDTH = 1280 ; // 768 pixels
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
-	public int scrollOffsetX = 0;
-	public int scrollOffsetY = 0;
+	public int scrollOffsetX = 10;
+	public int scrollOffsetY = 10;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -98,9 +98,6 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		m_player.update();
-		
-        scrollOffsetX -= 1;
-        scrollOffsetY -= 1;
 	}
 	
 	/**
