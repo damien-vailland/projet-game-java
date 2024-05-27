@@ -17,7 +17,7 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
-	public static boolean gauche=false,droite=false,haut=false,bas=false;
+	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	
 	/**
 	 * Constructeur de Player
@@ -35,8 +35,8 @@ public class Player extends Entity{
 	 * Initialisation des donn�es membres avec des valeurs par d�faut
 	 */
 	protected void setDefaultValues() {
-		m_x = 100;
-		m_y = 100;
+		m_x = 632;
+		m_y = 352;
 		m_speed = 4;
 	}
 	
@@ -57,22 +57,19 @@ public class Player extends Entity{
 	 */
 	public void update() {
 		if(gauche) {
-			m_x-=10;
-			gauche=false;
+			m_gp.scrollOffsetX += m_speed;
 		}
 		if(droite) {
-			m_x+=10;
-			droite=false;
+			m_gp.scrollOffsetX -=  m_speed;
 		}
 		if(haut){
-			m_y-=10;
-			haut=false;
+			m_gp.scrollOffsetY += m_speed;
 		}
 		if(bas){
-			m_y+=10;
-			bas=false;
+			m_gp.scrollOffsetY -=  m_speed;
 		}
 	}
+	
 	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu

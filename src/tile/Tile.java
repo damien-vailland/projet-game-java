@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
  */
 public class Tile {
 	public BufferedImage m_image;		//image
-	public boolean m_collision;			//début de gestion de collision entre éléments
+	public boolean m_collision;			//dï¿½but de gestion de collision entre ï¿½lï¿½ments
 	
 	Tile(){
 		m_collision = false;
