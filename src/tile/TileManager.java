@@ -102,23 +102,6 @@ public class TileManager {
 	public void draw(Graphics2D g2) {
 		int col = 0;
 		int row = 0;
-<<<<<<< HEAD
-		int x = 0;
-		int y = 0;
-		
-		while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREE_ROW) {
-			int tileNum = m_mapTileNum[col][row];
-			
-			g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
-			
-			col ++;
-			x += m_gp.TILE_SIZE;
-			if (col == m_gp.MAX_SCREEN_COL) {
-				col = 0;
-				row ++;
-				x = 0;
-				y += m_gp.TILE_SIZE;
-=======
 		int x = m_gp.scrollOffsetX;
 		int y = m_gp.scrollOffsetY;
 		for(row=0;row < m_gp.MAX_SCREEN_ROW;row++) {
@@ -127,7 +110,6 @@ public class TileManager {
 				
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 				x += m_gp.TILE_SIZE;
->>>>>>> main
 			}
 			x = m_gp.scrollOffsetX;
 			y += m_gp.TILE_SIZE;
