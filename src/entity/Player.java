@@ -57,22 +57,19 @@ public class Player extends Entity{
 	 */
 	public void update() {
 		if(gauche) {
-			m_x-=10;
-			gauche=false;
+			m_x-=m_speed;
 		}
 		if(droite) {
-			m_x+=10;
-			droite=false;
+			m_x+=m_speed;
 		}
 		if(haut){
-			m_y-=10;
-			haut=false;
+			m_y-=m_speed;
 		}
 		if(bas){
-			m_y+=10;
-			bas=false;
+			m_y+=m_speed;
 		}
 	}
+	
 	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
