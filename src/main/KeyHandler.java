@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Gestionnaire d'évènements (touche clavier)
+ * Gestionnaire d'ï¿½vï¿½nements (touche clavier)
  *
  */
 public class KeyHandler implements KeyListener{
@@ -16,11 +16,12 @@ public class KeyHandler implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// récupère le code du boutton appuyé
+		// rï¿½cupï¿½re le code du boutton appuyï¿½
 		int code = e.getKeyCode();
 		System.out.println(code);
 	}
 
+	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
