@@ -17,6 +17,7 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
+	public static boolean gauche=false,droite=false,haut=false,bas=false;
 	
 	/**
 	 * Constructeur de Player
@@ -55,8 +56,20 @@ public class Player extends Entity{
 	 * Mise � jour des donn�es du joueur
 	 */
 	public void update() {
-		
+		if(gauche) {
+			m_x-=m_speed;
+		}
+		if(droite) {
+			m_x+=m_speed;
+		}
+		if(haut){
+			m_y-=m_speed;
+		}
+		if(bas){
+			m_y+=m_speed;
+		}
 	}
+	
 	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
