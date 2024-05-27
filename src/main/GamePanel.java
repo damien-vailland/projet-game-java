@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.pnj_immobile;
 import tile.TileManager;
 
 import java.awt.Graphics;
@@ -34,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
+	pnj_immobile m_pnj;
 	TileManager m_tileM;
 		
 	/**
@@ -43,7 +45,8 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
-		m_tileM = new TileManager(this);
+		m_pnj = new pnj_immobile(this);
+;		m_tileM = new TileManager(this);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -113,6 +116,7 @@ public class GamePanel extends JPanel implements Runnable{
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
+		m_pnj.draw(g2);
 		g2.dispose();
 	}
 	

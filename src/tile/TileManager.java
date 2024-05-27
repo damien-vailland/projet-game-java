@@ -55,6 +55,15 @@ public class TileManager {
 			m_tile[5] = new Tile();
 			m_tile[5].m_image = ImageIO.read(getClass().getResource("/tiles/SNOW.png"));
 			
+	        m_tile[6] = new Tile(); 
+	        m_tile[6].m_image = ImageIO.read(getClass().getResource("/tiles/coffee.png"));
+
+	        m_tile[7] = new Tile(); 
+	        m_tile[7].m_image = ImageIO.read(getClass().getResource("/tiles/toilet.png"));
+
+	        m_tile[8] = new Tile(); 
+	        m_tile[8].m_image = ImageIO.read(getClass().getResource("/tiles/porte.png"));
+	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,12 +118,10 @@ public class TileManager {
 	 * @param g2
 	 */
 	public void draw(Graphics2D g2) {
-		int col = 0;
-		int row = 0;
 		int x = m_gp.scrollOffsetX;
 		int y = m_gp.scrollOffsetY;
-		for(row=0;row < m_gp.MAX_SCREEN_ROW;row++) {
-			for(col=0;col < m_gp.MAX_SCREEN_COL;col++) {
+		for(int row=0;row < m_gp.MAX_SCREEN_ROW;row++) {
+			for(int col=0;col < m_gp.MAX_SCREEN_COL;col++) {
 				int tileNum = m_mapTileNum[col][row];
 				
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
