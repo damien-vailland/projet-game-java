@@ -109,6 +109,7 @@ public class TileManager {
 			int tileNum = m_mapTileNum[col][row];
 			
 			g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+			
 			col ++;
 			x += m_gp.TILE_SIZE;
 			if (col == m_gp.MAX_SCREEN_COL) {
