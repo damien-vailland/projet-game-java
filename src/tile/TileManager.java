@@ -20,7 +20,6 @@ public class TileManager {
 	Tile[] m_tile;			//tableau de toutes les tiles possibles dans le jeu
 	int m_maxTiles = 10;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
-	
 	/**
 	 * Constructeur
 	 * @param gp
@@ -61,6 +60,13 @@ public class TileManager {
 		}
 	}
 	
+
+	public boolean isWall(int x, int y) {
+		int tileX = (-m_gp.scrollOffsetX + x) / m_gp.TILE_SIZE ;
+		int tileY = (-m_gp.scrollOffsetY + y ) / m_gp.TILE_SIZE;
+		return m_mapTileNum[tileX][tileY] == 1;
+	}
+	
 	/**
 	 * Lecture du fichier txt contenant la map et chargement des tuiles correspondantes.
 	 */
@@ -94,6 +100,9 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
+	
+//	IL FAUT ENFT QUE JE FASSE UNE FONCTION QUI VERIFIE LE PIXEL PRECISEMENT LE FRATE
+
 	
 	/**
 	 * Affichage de la carte avec les diff�rentes tuiles

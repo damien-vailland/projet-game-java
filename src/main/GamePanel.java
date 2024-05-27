@@ -24,8 +24,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int MAX_SCREEN_ROW = 49; 					 	// ces valeurs donnent une r�solution 4:3
 	public final int SCREEN_WIDTH = 1280 ; // 768 pixels
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
-	public int scrollOffsetX = 10;
-	public int scrollOffsetY = 10;
+	public int scrollOffsetX = -1000;
+	public int scrollOffsetY = -500;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
+		
 	}
 	
 	public void run() {
@@ -97,7 +98,11 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
-		m_player.update();
+		m_player.update(m_tileM.isWall(640, 385),
+						m_tileM.isWall(670, 385),
+						m_tileM.isWall(650,380),
+						m_tileM.isWall(650,400))
+		;
 	}
 	
 	/**

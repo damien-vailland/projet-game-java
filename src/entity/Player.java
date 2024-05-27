@@ -17,6 +17,7 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
+	public int m_boxG,m_boxD,m_boxH,m_boxB;
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	
 	/**
@@ -38,7 +39,13 @@ public class Player extends Entity{
 		m_x = 632;
 		m_y = 352;
 		m_speed = 4;
+		
+		m_boxG = 592;
+		m_boxD = 688;
+		m_boxH = 400;
+		m_boxB=800;
 	}
+
 	
 	/**
 	 * R�cup�ration de l'image du personnage
@@ -55,17 +62,17 @@ public class Player extends Entity{
 	/**
 	 * Mise � jour des donn�es du joueur
 	 */
-	public void update() {
-		if(gauche) {
+	public void update(boolean murG, boolean murD, boolean murH, boolean murB) {
+		if(gauche && !murG) {
 			m_gp.scrollOffsetX += m_speed;
 		}
-		if(droite) {
+		if(droite && !murD) {
 			m_gp.scrollOffsetX -=  m_speed;
 		}
-		if(haut){
+		if(haut && !murH){
 			m_gp.scrollOffsetY += m_speed;
 		}
-		if(bas){
+		if(bas && !murB){
 			m_gp.scrollOffsetY -=  m_speed;
 		}
 	}
