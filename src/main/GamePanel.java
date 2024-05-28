@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public static int m_nb_teacher=0;
 	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
 	boolean m_quete1;
+	boolean m_quete2;
 	
 	String currentMonth = "Septembre";
 	
@@ -66,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public GamePanel() {
 		m_quete1 = true;
+		m_quete2 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
@@ -74,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
+		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
 
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
@@ -334,7 +337,6 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
-				entity.Player.AddCoins(100);
 				m_player.updateScore(100);
 				m_player.updatePourcentageEnergy(20);
 				m_quete1 = false;
@@ -359,13 +361,22 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
 			m_pnj_mobile.get(0).pause = false;
-			g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+			if(m_quete2) {
+				g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use) {
+				m_quete2 = false;
+				m_player.updateScore(100);
+				m_player.updatePourcentageEnergy(20);
+			}
 		}else {
 			m_pnj_mobile.get(0).pause = true;
 		}
 		
 		
-		if (m_player.checkCollision(m_pnj.get(6).m_x, m_pnj.get(6).m_y, TILE_SIZE)) {
+		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
 			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
 		}
 	}
