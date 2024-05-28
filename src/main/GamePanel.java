@@ -47,7 +47,7 @@ public class GamePanel extends JPanel implements Runnable{
 	List<coins> m_coins = new ArrayList<>();
 	TileManager m_tileM;
 	
-	String currentMonth = "Septembre";
+	public String currentMonth = "Septembre";
 	
 	/**
 	 * Constructeur
@@ -126,6 +126,7 @@ public class GamePanel extends JPanel implements Runnable{
 		;
 		m_tileM.doorUpdate();
 		collectCoins();
+		m_tileM.coffeeUpdate();
 	}
 	
 	/**
@@ -198,7 +199,12 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-            m_player.updatePourcentageEnergy(-5);
+        	int x=-5;
+        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+        	if(m_tileM.breakCoffee()) {
+        		x*=2;
+        	}
+            m_player.updatePourcentageEnergy(x);
         }
     }
 	

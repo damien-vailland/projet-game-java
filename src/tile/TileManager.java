@@ -95,6 +95,11 @@ public class TileManager {
 			m_tile[4] = new Tile(false);
 			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
 			
+			m_tile[2] = new Tile(true);
+			m_tile[2].m_image = ImageIO.read(getClass().getResource("/tiles/coffee-1.png"));
+			
+			m_tile[23] = new Tile(true);
+			m_tile[23].m_image = ImageIO.read(getClass().getResource("/tiles/coffee-2.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -113,8 +118,33 @@ public class TileManager {
 		return m_mapTileNum[tileX][tileY] == 3 || m_mapTileNum[tileX][tileY] == 5;
 	}
 	
+	public void coffeeUpdate() {
+		System.out.println(m_gp.currentMonth);
+		//La machine à café casse à partir de octobre
+		if(m_gp.currentMonth!="Septembre") {
+			m_mapTileNum[46][44]=23;
+			if(m_use) {
+				//Points autour du personnage pour détecter les trucs
+				int tileX = (-m_gp.scrollOffsetX + 650) / m_gp.TILE_SIZE ;
+				int tileY = (-m_gp.scrollOffsetY + 400 ) / m_gp.TILE_SIZE;
+				if(m_mapTileNum[tileX][tileY] == 23) {
+						m_mapTileNum[tileX][tileY]=23;
+						m_use=false;
+				}
+			}
+		} else {
+			m_mapTileNum[46][44]=2;
+		}
+	}
+	
+	//Tester si la machine à café est cassée
+	public boolean breakCoffee(){
+		return m_mapTileNum[46][44]==23;
+	}
+	
 	public void doorUpdate() {
 		if(m_use) {
+			//Points autour du personnage pour détecter les trucs
 			int tileX = (-m_gp.scrollOffsetX + 640) / m_gp.TILE_SIZE ;
 			int tileY = (-m_gp.scrollOffsetY + 380 ) / m_gp.TILE_SIZE;
 			
