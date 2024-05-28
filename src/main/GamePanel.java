@@ -302,6 +302,8 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		g2.setColor(Color.WHITE);
+ 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
 		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
 		g2.drawString("Élève : "+m_nb_student, 0, 125);
 		CoffeeMessage(g2);
