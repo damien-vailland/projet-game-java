@@ -227,6 +227,17 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
+    public void drawPauseScreen( Graphics2D g2) {
+    	String m_text="GAME PAUSED"; 
+    	int length=(int)g2.getFontMetrics().getStringBounds(m_text, g2).getWidth(); 
+    	int x=450;
+    	int y=400;
+    	g2.setColor(Color.red);
+    	g2.setFont(new Font("Arial", Font.BOLD, 50));
+    	g2.drawString(m_text, x, y);
+    	
+    }
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -237,6 +248,9 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		if (gameState==pauseState) {
+			drawPauseScreen( g2);
+		}
 		for (pnj pnj:m_tab_pnj) {
 			pnj.draw(g2);
 		}
