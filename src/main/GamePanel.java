@@ -150,11 +150,12 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		if (gameState==playState) {
-		m_player.update(m_tileM.isWall(640, 380),
-						m_tileM.isWall(670, 380),
-						m_tileM.isWall(650,375),
-						m_tileM.isWall(650,400))
+		m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
+						m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
+						m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
+						m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
 		;
+		
 		m_tileM.doorUpdate();
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
