@@ -98,9 +98,9 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
-		m_player.update(m_tileM.isWall(640, 385),
-						m_tileM.isWall(670, 385),
-						m_tileM.isWall(650,380),
+		m_player.update(m_tileM.isWall(640, 380),
+						m_tileM.isWall(670, 380),
+						m_tileM.isWall(650,375),
 						m_tileM.isWall(650,400))
 		;
 	}
