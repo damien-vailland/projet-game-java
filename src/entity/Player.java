@@ -18,6 +18,8 @@ public class Player extends Entity{
 	GamePanel m_gp;
 	KeyHandler m_keyH;
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
+	int pourcentage_energy;
+	int score;
 	
 	/**
 	 * Constructeur de Player
@@ -27,6 +29,8 @@ public class Player extends Entity{
 	public Player(GamePanel a_gp, KeyHandler a_keyH) {
 		this.m_gp = a_gp;
 		this.m_keyH = a_keyH;
+		this.pourcentage_energy = 50;
+		this.score = 0;
 		this.setDefaultValues();
 		this.getPlayerImage();
 	}
@@ -50,6 +54,14 @@ public class Player extends Entity{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public int getPourcentageEnergy() {
+	    return pourcentage_energy;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 	
 	/**

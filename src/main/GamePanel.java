@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JPanel;
 
@@ -26,7 +27,6 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = 10;
 	public int scrollOffsetY = 10;
-
 	// FPS : taux de rafraichissement
 	int m_FPS;
 	
@@ -35,7 +35,9 @@ public class GamePanel extends JPanel implements Runnable{
 	Thread m_gameThread;
 	Player m_player;
 	TileManager m_tileM;
-		
+	
+	String currentMonth = "Septembre";
+	
 	/**
 	 * Constructeur
 	 */
@@ -103,11 +105,57 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
+	public void drawEnergyBar(Graphics2D g2) {
+	    int energyBarWidth = 200; // Largeur totale de la barre d'énergie
+	    int energyBarHeight = 20; // Hauteur de la barre d'énergie
+	    int x = 10; // Position X de la barre d'énergie
+	    int y = 10; // Position Y de la barre d'énergie
+
+	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
+	    int currentEnergyWidth = (int) (energyBarWidth * (m_player.getPourcentageEnergy() / 100.0));
+
+	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
+	    g2.setColor(Color.GRAY);
+	    g2.fillRect(x, y, energyBarWidth, energyBarHeight);
+
+	    // Dessiner la barre d'énergie actuelle (en vert)
+	    g2.setColor(Color.GREEN);
+	    g2.fillRect(x, y, currentEnergyWidth, energyBarHeight);
+
+	    // Dessiner le contour de la barre d'énergie
+	    g2.setColor(Color.BLACK);
+	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	}
+	
+	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
+	    int x = SCREEN_WIDTH - 100; // Position X pour le mois (à droite)
+	    int y = 25; // Position Y pour le mois
+	    g2.setColor(Color.WHITE);
+	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+	    g2.drawString(currentMonth, x, y);
+	}
+	
+    public void updateCurrentMonth(long startTime, long monthDuration, String[] months) {
+        int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
+        currentMonth = months[currentMonthIndex];
+    }
+	
+    public void drawScore(Graphics2D g2) {
+    	int x = 400; // Position X pour le mois (à droite)
+ 	    int y = 25 ; // Position Y pour le mois
+ 	    g2.setColor(Color.WHITE);
+ 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+ 	    g2.drawString("Score : " + m_player.getScore(), x, y);
+    }
+    
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
+		drawEnergyBar(g2);
+		drawCurrentMonth(g2, currentMonth);
+		drawScore(g2);
 		g2.dispose();
 	}
 	
