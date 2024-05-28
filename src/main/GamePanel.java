@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import entity.pnj;
 import object.coins;
+import object.coffee;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -61,6 +62,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
 		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
 		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
+		//m_coffee.add(new coffee(this, ));
 		m_coins.add(new coins(this,1650,800));
 		m_tileM = new TileManager(this);
 		
