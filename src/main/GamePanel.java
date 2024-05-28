@@ -21,13 +21,14 @@ public class GamePanel extends JPanel implements Runnable{
 	final int ORIGINAL_TILE_SIZE = 16; 							// une tuile de taille 16x16
 	final int SCALE = 3; 										// �chelle utilis�e pour agrandir l'affichage
 	public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; 	// 48x48
-	public final int MAX_SCREEN_COL = 71;
-	public final int MAX_SCREEN_ROW = 49; 					 	// ces valeurs donnent une r�solution 4:3
+
+	public final int MAX_SCREEN_COL = 73;
+	public final int MAX_SCREEN_ROW = 51; 					 	// ces valeurs donnent une r�solution 4:3
+
 	public final int SCREEN_WIDTH = 1280 ; // 768 pixels
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
 	public int scrollOffsetY = -500;
-
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -109,6 +110,9 @@ public class GamePanel extends JPanel implements Runnable{
 		;
 	}
 	
+	/**
+	 * Affichage des �l�ments
+	 */
 	public void drawEnergyBar(Graphics2D g2) {
 	    int energyBarWidth = 200; // Largeur totale de la barre d'énergie
 	    int energyBarHeight = 20; // Hauteur de la barre d'énergie
@@ -155,6 +159,7 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
     
+
 	/**
 	 * Affichage des �l�ments
 	 */

@@ -17,10 +17,11 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
-	int pourcentage_energy;
-	int score;
+
 	public int m_boxG,m_boxD,m_boxH,m_boxB;
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
+	int pourcentage_energy;
+	int score;
 	
 	/**
 	 * Constructeur de Player
