@@ -73,7 +73,7 @@ public class pnj extends Entity{
 		tab_pnj_1.add(new pnj(a_gp, 2400, 450)); //bureau julien gavard
 		
 		tab_pnj_2.add(new pnj(a_gp, 700,700)); //salle de classe 102
-		tab_pnj_2.add(new pnj(a_gp, 2400, 650)); //BDE
+		tab_pnj_2.add(new pnj(a_gp, 2400, 650));//BDE
 	}
 	
 }

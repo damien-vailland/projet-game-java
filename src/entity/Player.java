@@ -162,18 +162,18 @@ public class Player extends Entity{
 		a_g2.drawImage(l_image, m_x, m_y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
-	public boolean checkCollision(int coinX, int coinY, int coinSize) {
+	public boolean checkCollision(int X, int Y, int Size) {
 	    int playerLeft = m_x;
 	    int playerRight = m_x + m_gp.TILE_SIZE;
 	    int playerTop = m_y;
 	    int playerBottom = m_y + m_gp.TILE_SIZE;
 
-	    int coinLeft = coinX + m_gp.scrollOffsetX;
-	    int coinRight = coinX + m_gp.scrollOffsetX + coinSize;
-	    int coinTop = coinY + m_gp.scrollOffsetY;
-	    int coinBottom = coinY + m_gp.scrollOffsetY + coinSize;
+	    int Left = X + m_gp.scrollOffsetX;
+	    int Right = X + m_gp.scrollOffsetX + Size;
+	    int Top = Y + m_gp.scrollOffsetY;
+	    int Bottom = Y + m_gp.scrollOffsetY + Size;
 
-	    return !(playerLeft >= coinRight || playerRight <= coinLeft || playerTop >= coinBottom || playerBottom <= coinTop);
+	    return !(playerLeft >= Right || playerRight <= Left || playerTop >= Bottom || playerBottom <= Top);
 	}
 
 	
