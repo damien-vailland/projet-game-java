@@ -200,7 +200,7 @@ public class TileManager {
 						if(m_mapTileNum[col][row - 1] == 1 
 						&& m_mapTileNum[col][row + 1] != 1
 						&& m_mapTileNum[col - 1][row] == 1
-						&& m_mapTileNum[col + 1][row] != 1) {
+						&& m_mapTileNum[col + 1][row] == 1) {
 							tileNum = 20;
 						}
 
