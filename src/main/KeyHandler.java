@@ -24,7 +24,6 @@ public class KeyHandler implements KeyListener{
 		// r�cup�re le code du boutton appuy�
 		
 		int code = e.getKeyCode();
-		System.out.println(code);
 		if (code==80) {
 			if (m_gp.gameState==m_gp.playState) {
 				m_gp.gameState=m_gp.pauseState;
