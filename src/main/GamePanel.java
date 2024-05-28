@@ -123,6 +123,7 @@ public class GamePanel extends JPanel implements Runnable{
 						m_tileM.isWall(650,400))
 		;
 		m_tileM.doorUpdate();
+		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
 	}
 	

@@ -21,6 +21,7 @@ public class TileManager {
 	int m_maxTiles = 25;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
 	public static boolean m_use=false;
+	int m_mapChoose = 1;
 	/**
 	 * Constructeur
 	 * @param gp
@@ -89,8 +90,14 @@ public class TileManager {
 			m_tile[6] = new Tile(false);
 			m_tile[6].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_1.png"));
 			
-			m_tile[7] = new Tile(false);
-			m_tile[7].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_2.png"));
+			m_tile[18] = new Tile(false);
+			m_tile[18].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_2.png"));
+			
+			m_tile[24] = new Tile(false);
+			m_tile[24].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_3.png"));
+
+			m_tile[22] = new Tile(false);
+			m_tile[22].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_4.png"));
 			
 			m_tile[4] = new Tile(false);
 			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
@@ -107,10 +114,19 @@ public class TileManager {
 		return m_tile[m_mapTileNum[tileX][tileY]].m_collision;
 	}
 	
-	public boolean idDoor(int x, int y) {
+	public void stairsUpdate(int x, int y) {
 		int tileX = (-m_gp.scrollOffsetX + x) / m_gp.TILE_SIZE ;
 		int tileY = (-m_gp.scrollOffsetY + y ) / m_gp.TILE_SIZE;
-		return m_mapTileNum[tileX][tileY] == 3 || m_mapTileNum[tileX][tileY] == 5;
+		
+		if(m_mapTileNum[tileX][tileY] == 6 || m_mapTileNum[tileX][tileY] == 7) {
+			if(m_mapChoose==1) {
+				m_mapChoose=2;
+				this.loadMap("/maps/map2.txt");
+			} else {
+				m_mapChoose=1;
+				this.loadMap("/maps/map.txt");
+			}
+		}
 	}
 	
 	public void doorUpdate() {
@@ -301,6 +317,21 @@ public class TileManager {
 							&& m_mapTileNum[col + 1][row] != 1) {
 								tileNum = 5;
 							}	
+					}
+				}
+				if(tileNum == 6) {
+					if(m_mapChoose != 1) {
+						tileNum = 22;
+					}
+					
+					if(row < m_gp.MAX_SCREEN_ROW-1 && col < m_gp.MAX_SCREEN_COL-1) {
+						if(m_mapTileNum[col][row + 1] == 6) {
+							if(m_mapChoose == 1) {
+								tileNum = 18;
+							} else {
+								tileNum = 24;
+							}
+						}
 					}
 				}
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
