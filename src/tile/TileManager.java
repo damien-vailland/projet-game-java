@@ -18,9 +18,8 @@ import main.GamePanel;
 public class TileManager {
 	GamePanel m_gp;			//panel du jeu principal
 	Tile[] m_tile;			//tableau de toutes les tiles possibles dans le jeu
-	int m_maxTiles = 10;	//nombre maximum de tiles chargeable dans le jeu
+	int m_maxTiles = 30;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
-	
 	/**
 	 * Constructeur
 	 * @param gp
@@ -38,36 +37,61 @@ public class TileManager {
 	 */
 	public void getTileImage() {
 		try {
-			m_tile[0] = new Tile();
+			m_tile[0] = new Tile(false);
 			m_tile[0].m_image = ImageIO.read(getClass().getResource("/tiles/GRASS.png"));
 			
-			m_tile[1] = new Tile();
-			m_tile[1].m_image = ImageIO.read(getClass().getResource("/tiles/BRICK2.png"));
+			m_tile[1] = new Tile(true);
+			m_tile[1].m_image = ImageIO.read(getClass().getResource("/tiles/wall_h.png"));
 			
-			m_tile[2] = new Tile();
-			m_tile[2].m_image = ImageIO.read(getClass().getResource("/tiles/WATER.png"));
+			m_tile[11] = new Tile(true);
+			m_tile[11].m_image = ImageIO.read(getClass().getResource("/tiles/wall_v.png"));
 			
-			m_tile[3] = new Tile();
-			m_tile[3].m_image = ImageIO.read(getClass().getResource("/tiles/LAVA.png"));
+			m_tile[12] = new Tile(true);
+			m_tile[12].m_image = ImageIO.read(getClass().getResource("/tiles/wall_v_2.png"));
 			
-			m_tile[4] = new Tile();
-			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/SAND.png"));
+			m_tile[13] = new Tile(true);
+			m_tile[13].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_bl.png"));
 			
-			m_tile[5] = new Tile();
-			m_tile[5].m_image = ImageIO.read(getClass().getResource("/tiles/SNOW.png"));
+			m_tile[14] = new Tile(true);
+			m_tile[14].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_br.png"));
 			
-	        m_tile[6] = new Tile(); 
-	        m_tile[6].m_image = ImageIO.read(getClass().getResource("/tiles/coffee.png"));
+			m_tile[15] = new Tile(true);
+			m_tile[15].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_bru.png"));
+			
+			m_tile[16] = new Tile(true);
+			m_tile[16].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_blu.png"));
+			
+			m_tile[17] = new Tile(true);
+			m_tile[17].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_ur.png"));
 
-	        m_tile[7] = new Tile(); 
-	        m_tile[7].m_image = ImageIO.read(getClass().getResource("/tiles/toilet.png"));
+			m_tile[18] = new Tile(true);
+			m_tile[18].m_image = ImageIO.read(getClass().getResource("/tiles/wall_v_3.png"));
 
-	        m_tile[8] = new Tile(); 
-	        m_tile[8].m_image = ImageIO.read(getClass().getResource("/tiles/porte.png"));
-	        
+			m_tile[19] = new Tile(true);
+			m_tile[19].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_rlb.png"));
+
+			m_tile[20] = new Tile(true);
+			m_tile[20].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_rlu.png"));
+
+			m_tile[21] = new Tile(true);
+			m_tile[21].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_ul.png"));
+			
+			
+			
+			
+			m_tile[4] = new Tile(false);
+			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+
+	public boolean isWall(int x, int y) {
+		int tileX = (-m_gp.scrollOffsetX + x) / m_gp.TILE_SIZE ;
+		int tileY = (-m_gp.scrollOffsetY + y ) / m_gp.TILE_SIZE;
+		return m_tile[m_mapTileNum[tileX][tileY]].m_collision;
 	}
 	
 	/**
@@ -104,6 +128,9 @@ public class TileManager {
 		}
 	}
 	
+//	IL FAUT ENFT QUE JE FASSE UNE FONCTION QUI VERIFIE LE PIXEL PRECISEMENT LE FRATE
+
+	
 	/**
 	 * Affichage de la carte avec les diff�rentes tuiles
 	 * @param g2
@@ -114,7 +141,78 @@ public class TileManager {
 		for(int row=0;row < m_gp.MAX_SCREEN_ROW;row++) {
 			for(int col=0;col < m_gp.MAX_SCREEN_COL;col++) {
 				int tileNum = m_mapTileNum[col][row];
-				
+				if(tileNum == 1) {
+					if(row < m_gp.MAX_SCREEN_ROW-1 && col < m_gp.MAX_SCREEN_COL-1) {
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 11;
+						}
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] != 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 12;
+						}
+						if(m_mapTileNum[col][row - 1] != 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] == 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 13;
+						}
+						if(m_mapTileNum[col][row - 1] != 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] == 1) {
+							tileNum = 14;
+						}
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] == 1) {
+							tileNum = 15;
+						}
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] == 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 16;
+						}
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] != 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] == 1) {
+							tileNum = 17;
+						}
+						if(m_mapTileNum[col][row - 1] != 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] != 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 18;
+						}
+						if(m_mapTileNum[col][row - 1] != 1 
+						&& m_mapTileNum[col][row + 1] == 1
+						&& m_mapTileNum[col - 1][row] == 1
+						&& m_mapTileNum[col + 1][row] == 1) {
+							tileNum = 19;
+						}
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] != 1
+						&& m_mapTileNum[col - 1][row] == 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 20;
+						}
+
+						if(m_mapTileNum[col][row - 1] == 1 
+						&& m_mapTileNum[col][row + 1] != 1
+						&& m_mapTileNum[col - 1][row] == 1
+						&& m_mapTileNum[col + 1][row] != 1) {
+							tileNum = 21;
+						}
+						
+					}
+				}
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 				x += m_gp.TILE_SIZE;
 			}

@@ -5,7 +5,6 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import entity.Player;
-import entity.pnj_immobile;
 import tile.TileManager;
 
 import java.awt.Graphics;
@@ -25,8 +24,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int MAX_SCREEN_ROW = 49; 					 	// ces valeurs donnent une r�solution 4:3
 	public final int SCREEN_WIDTH = 1280 ; // 768 pixels
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
-	public int scrollOffsetX = 10;
-	public int scrollOffsetY = 10;
+	public int scrollOffsetX = -1000;
+	public int scrollOffsetY = -500;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -35,7 +34,6 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
-	pnj_immobile m_pnj;
 	TileManager m_tileM;
 		
 	/**
@@ -45,8 +43,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
-		m_pnj = new pnj_immobile(this);
-;		m_tileM = new TileManager(this);
+		m_tileM = new TileManager(this);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -61,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
+		
 	}
 	
 	public void run() {
@@ -100,7 +98,11 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
-		m_player.update();
+		m_player.update(m_tileM.isWall(640, 380),
+						m_tileM.isWall(670, 380),
+						m_tileM.isWall(650,375),
+						m_tileM.isWall(650,400))
+		;
 	}
 	
 	/**
@@ -111,7 +113,6 @@ public class GamePanel extends JPanel implements Runnable{
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
-		m_pnj.draw(g2);
 		g2.dispose();
 	}
 	
