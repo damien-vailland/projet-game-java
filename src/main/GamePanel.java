@@ -54,16 +54,9 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Constructeur
 	 */
 	public GamePanel() {
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 1150, 580);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 580, 245);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 1230, 600);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 700, 350);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 450, 200);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 980, 520);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 800, 400);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 640, 290);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 1300, 650);
-		object.coins.ajouterCoordonnees(m_coordonee_coin, 900, 470);
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 640, 290);
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 1300, 650);
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 900, 470);
         
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
@@ -76,7 +69,14 @@ public class GamePanel extends JPanel implements Runnable{
 		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
 		m_tileM = new TileManager(this);
 		
-		object.coins.add_Coins_to_panel(m_coins);
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 1350, 580); //salle début
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 580, 800); //salle 02
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 1230, 1350); //bureau a gauche
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2100, 450); //entree hall
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2400, 650); //administration
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 3150, 200); // amphi L
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2300,2100); //bulle
+		object.coins.add_Coins_to_panel(this,m_coins,m_coordonee_coin);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -210,6 +210,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
             m_player.updatePourcentageEnergy(-5);
+    		object.coins.add_Coins_to_panel(this,m_coins,m_coordonee_coin);
         }
     }
 	
@@ -249,6 +250,7 @@ public class GamePanel extends JPanel implements Runnable{
 	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
 	            collectedCoins.add(coin);
 	            entity.Player.AddCoins(100);
+	            object.coins.nb_coins-=1;
 	        }
 	    }
 	    m_coins.removeAll(collectedCoins);
