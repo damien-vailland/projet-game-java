@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
+import object.coins;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -41,7 +42,8 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
-	List<pnj> m_pnj;
+	List<pnj> m_pnj = new ArrayList<>();
+	List<coins> m_coins = new ArrayList<>();
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -53,13 +55,13 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
-		m_pnj = new ArrayList<>();
 		m_pnj.add(new pnj(this, 700,350));//salle de classe
 		m_pnj.add(new pnj(this, 1650, 1250));//bureau
 		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
 		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
 		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
 		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
+		m_coins.add(new coins(this,1650,800));
 		m_tileM = new TileManager(this);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -120,6 +122,7 @@ public class GamePanel extends JPanel implements Runnable{
 						m_tileM.isWall(650,375),
 						m_tileM.isWall(650,400))
 		;
+		collectCoins();
 	}
 	
 	/**
@@ -220,7 +223,21 @@ public class GamePanel extends JPanel implements Runnable{
 		for (pnj pnj:m_pnj) {
 			pnj.draw(g2);
 		}
+		for (coins coin:m_coins) {
+			coin.draw(g2);
+		}
 		g2.dispose();
 	}
+	
+	public void collectCoins() {
+	    List<coins> collectedCoins = new ArrayList<>();
+	    for (coins coin : m_coins) {
+	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
+	            collectedCoins.add(coin);
+	        }
+	    }
+	    m_coins.removeAll(collectedCoins);
+	}
+
 	
 }
