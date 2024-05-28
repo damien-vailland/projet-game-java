@@ -19,8 +19,9 @@ public class Player extends Entity{
 	KeyHandler m_keyH;
 
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
-	int pourcentage_energy;
+	static float pourcentage_energy;
 	int score;
+	public static int salaire=0;
 	public static int m_coins=40;
 	
     private BufferedImage[][] m_idleImages = new BufferedImage[4][4];
@@ -78,7 +79,7 @@ public class Player extends Entity{
         }
 	}
 	
-	public int getPourcentageEnergy() {
+	public float getPourcentageSatisfaction() {
 	    return pourcentage_energy;
 	}
 	
@@ -136,13 +137,17 @@ public class Player extends Entity{
 	}
 	
 	
-	public void updatePourcentageEnergy(int x) {
-		if (pourcentage_energy + x < 100) {
-			pourcentage_energy += x;
+	public void updatePourcentageSatisfaction(float x) {
+		if (pourcentage_energy * x < 100) {
+			pourcentage_energy = pourcentage_energy*x;
 		}
 		else {
 			pourcentage_energy = 100;
 		}
+	}
+	
+	public void updateScore(int x) {
+			score += x;
 	}
 	
 	
@@ -157,18 +162,18 @@ public class Player extends Entity{
 		a_g2.drawImage(l_image, m_x, m_y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
-	public boolean checkCollision(int coinX, int coinY, int coinSize) {
+	public boolean checkCollision(int X, int Y, int Size) {
 	    int playerLeft = m_x;
 	    int playerRight = m_x + m_gp.TILE_SIZE;
 	    int playerTop = m_y;
 	    int playerBottom = m_y + m_gp.TILE_SIZE;
 
-	    int coinLeft = coinX + m_gp.scrollOffsetX;
-	    int coinRight = coinX + m_gp.scrollOffsetX + coinSize;
-	    int coinTop = coinY + m_gp.scrollOffsetY;
-	    int coinBottom = coinY + m_gp.scrollOffsetY + coinSize;
+	    int Left = X + m_gp.scrollOffsetX;
+	    int Right = X + m_gp.scrollOffsetX + Size;
+	    int Top = Y + m_gp.scrollOffsetY;
+	    int Bottom = Y + m_gp.scrollOffsetY + Size;
 
-	    return !(playerLeft >= coinRight || playerRight <= coinLeft || playerTop >= coinBottom || playerBottom <= coinTop);
+	    return !(playerLeft >= Right || playerRight <= Left || playerTop >= Bottom || playerBottom <= Top);
 	}
 
 	

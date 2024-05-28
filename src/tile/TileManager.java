@@ -102,6 +102,9 @@ public class TileManager {
 			
 			m_tile[4] = new Tile(false);
 			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
+
+			m_tile[23] = new Tile(false);
+			m_tile[23].m_image = ImageIO.read(getClass().getResource("/tiles/grass_2.png"));
 			
 			m_tile[2] = new Tile(true);
 			m_tile[2].m_image = ImageIO.read(getClass().getResource("/tiles/coffee-1.png"));
@@ -371,6 +374,11 @@ public class TileManager {
 						}
 					}
 				}
+//				if(tileNum == 0) {
+//					if(m_mapChoose != 1) {
+//						tileNum = 23;
+//					}
+//				}
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 				x += m_gp.TILE_SIZE;
 			}

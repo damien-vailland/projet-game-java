@@ -6,7 +6,10 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.add_teachers;
+import entity.add_students;
 import entity.pnj;
+import entity.pnj_mobile;
 import entity.coins;
 import entity.Craie;
 import tile.TileManager;
@@ -43,15 +46,26 @@ public class GamePanel extends JPanel implements Runnable{
 	// Cr�ation des diff�rentes instances (Player, KeyHandler, TileManager, GameThread ...)
 	KeyHandler m_keyH;
 	Thread m_gameThread;
-	Player m_player;
+	public static Player m_player;
 	List<pnj> m_tab_pnj_1 = new ArrayList<>();
 	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
 	List<Craie> m_tab_craies;
 	Craie m_craie;
 	List<Object> inventaire;
+
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
+	add_teachers m_add_prof;
+	add_students m_add_eleve;
+
+	public static int m_nb_teacher=1;
+	public static int m_nb_student=1;
+	
+	float coeff_satisfaction=1;
+	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
+	boolean m_quete1;
+	boolean m_quete2;
 	
 	public String currentMonth = "Septembre";
 	
@@ -59,6 +73,8 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Constructeur
 	 */
 	public GamePanel() {
+		m_quete1 = true;
+		m_quete2 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
@@ -67,17 +83,15 @@ public class GamePanel extends JPanel implements Runnable{
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
-		 
-		// initialisation: 
-		
-		
-		
-		
-		
+		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
+
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
+		
+		m_add_prof = new add_teachers(this,1150, 1550);
+		m_add_eleve = new add_students(this,1150, 1850);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -136,14 +150,21 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		if (gameState==playState) {
-		m_player.update(m_tileM.isWall(640, 380),
-						m_tileM.isWall(670, 380),
-						m_tileM.isWall(650,375),
-						m_tileM.isWall(650,400))
+		m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
+						m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
+						m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
+						m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
 		;
+		
 		m_tileM.doorUpdate();
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
+		if (add_teachers.nouveau_prof && check_add_prof()) {
+            add_teachers.ajout_prof();
+        }
+        if (add_students.nouvel_eleve && check_add_eleve()) {
+            add_students.ajout_eleve();
+        }
 		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
@@ -154,32 +175,32 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
-	public void drawEnergyBar(Graphics2D g2) {
-	    int energyBarWidth = 200; // Largeur totale de la barre d'énergie
-	    int energyBarHeight = 20; // Hauteur de la barre d'énergie
+	public void drawSatisfactionBar(Graphics2D g2) {
+	    int satisfactionBarWidth = 200; // Largeur totale de la barre d'énergie
+	    int satisfactionBarHeight = 20; // Hauteur de la barre d'énergie
 	    int x = 10; // Position X de la barre d'énergie
 	    int y = 10; // Position Y de la barre d'énergie
 
 	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
-	    int currentEnergyWidth = (int) (energyBarWidth * (m_player.getPourcentageEnergy() / 100.0));
+	    int currentSatisfactionWidth = (int) (satisfactionBarWidth * (m_player.getPourcentageSatisfaction() / 100.0));
 
 	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
 	    g2.setColor(Color.GRAY);
-	    g2.fillRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.fillRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 
 	    // Dessiner la barre d'énergie actuelle (en vert)
 	    g2.setColor(Color.GREEN);
-	    g2.fillRect(x, y, currentEnergyWidth, energyBarHeight);
+	    g2.fillRect(x, y, currentSatisfactionWidth, satisfactionBarHeight);
 
 	    // Dessiner le contour de la barre d'énergie
 	    g2.setColor(Color.BLACK);
-	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.drawRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 	    
 	    g2.setColor(Color.BLACK);
-	    String text = "Energie";
+	    String text = "Satisfaction";
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
-	    int textX = x + (energyBarWidth - metrics.stringWidth(text)) / 2;
-	    int textY = y + ((energyBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+	    int textX = x + (satisfactionBarWidth - metrics.stringWidth(text)) / 2;
+	    int textY = y + ((satisfactionBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
 	    g2.drawString(text, textX, textY);
 	}
 	
@@ -221,13 +242,15 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-        	int x=-5;
+        	coeff_satisfaction=m_nb_teacher/m_nb_student;
+            m_player.updatePourcentageSatisfaction(coeff_satisfaction);
+			int x=-5;
         	//la barre de vie diminue plus vite lorsque la machine à café est cassée
         	if(m_tileM.breakCoffee()) {
         		x*=2;
         	}
-            m_player.updatePourcentageEnergy(x);
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
+			entity.Player.AddCoins(entity.Player.salaire);
         }
     }
 	
@@ -275,11 +298,13 @@ public class GamePanel extends JPanel implements Runnable{
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
-		drawEnergyBar(g2);
+		drawSatisfactionBar(g2);
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+		g2.drawString("Élève : "+m_nb_student, 0, 125);
 		CoffeeMessage(g2);
 		RappelMission(g2);
 
@@ -290,6 +315,8 @@ public class GamePanel extends JPanel implements Runnable{
 			for (coins coin:m_tab_coins) {
 				coin.draw(g2);
 			}
+			m_add_prof.draw(g2);
+			m_add_eleve.draw(g2);
 		}
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
@@ -302,6 +329,11 @@ public class GamePanel extends JPanel implements Runnable{
 				pnj.draw(g2);
 			}
 		}
+		for (pnj_mobile p : m_pnj_mobile) {
+            p.update();
+            p.draw(g2);
+        }
+		
 		
 		collectCraie();
 		g2.dispose();
@@ -340,7 +372,7 @@ public class GamePanel extends JPanel implements Runnable{
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
 				m_player.m_coins-=100;
 				machineReparee=true;
-				m_player.updatePourcentageEnergy(10);
+				m_player.updatePourcentageSatisfaction(10);
 				return true;
 			}
 		}
@@ -351,16 +383,20 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
+
 		if (m_player.checkCollision(m_tab_pnj_1.get(0).m_x, m_tab_pnj_1.get(0).m_y, TILE_SIZE)) {
-			boolean var = true;
-			if (var) {
-				g2.drawString("Tu peux aller me chercher une craie dans la salle 103 ?", m_player.m_x, m_player.m_y - 10);
+			
+			if (m_quete1) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+
 			}
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
-				entity.Player.AddCoins(100);
-				var = false;
-				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(20);
+				m_quete1 = false;
 			}
 			
 		}
@@ -372,8 +408,46 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
-			g2.drawString("Bienvenue au BDE", m_player.m_x, m_player.m_y - 10);
+			g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas ? \n Pour ouvrir le local", m_player.m_x, m_player.m_y - 10);
 		}
+		
+		if (m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("-300€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		if (m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouvel élève !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("+50€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		
+		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
+			m_pnj_mobile.get(0).pause = false;
+			if(m_quete2) {
+				g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use) {
+				m_quete2 = false;
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(20);
+			}
+		}else {
+			m_pnj_mobile.get(0).pause = true;
+		}
+		
+		
+		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
+			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
+		}
+	}
+
+	public boolean check_add_eleve() {
+	    return m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE);
+	}
+
+	public boolean check_add_prof() {
+	    return m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE);
 	}
 	
 }
