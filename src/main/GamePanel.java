@@ -35,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
 	public int scrollOffsetY = -500;
+	public boolean machineReparee = false;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -224,6 +225,13 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
     
+    public void CoffeeMessage(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        if(m_tileM.behindBreakCoffee()) {
+    		g2.drawString("Appuyer sur a pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
+        }
+    }
 
 	/**
 	 * Affichage des �l�ments
@@ -238,6 +246,7 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		CoffeeMessage(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -283,6 +292,23 @@ public class GamePanel extends JPanel implements Runnable{
         }
         m_tab_craies.removeAll(collectedCraies);
     }
+	
+	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
+	public boolean reparationPossible(/*Graphics2D g2*/) {
+		if(m_tileM.reparationCoffee()) {
+			if(m_player.m_coins<100) {
+//				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
+				return false;
+			} else {
+//				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
+				m_player.m_coins-=100;
+				machineReparee=true;
+				m_player.updatePourcentageEnergy(10);
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);

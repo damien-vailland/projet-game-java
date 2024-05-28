@@ -22,7 +22,7 @@ public class Player extends Entity{
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	int pourcentage_energy;
 	int score;
-	static int m_coins=40;
+	public static int m_coins=40;
 	
 	/**
 	 * Constructeur de Player

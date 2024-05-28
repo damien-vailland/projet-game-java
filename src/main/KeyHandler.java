@@ -32,6 +32,9 @@ public class KeyHandler implements KeyListener{
 		if(code==69) {
 			tile.TileManager.m_use=true;
 		}
+		if(code==65) {
+			tile.TileManager.m_act=true;
+		}
 	}
 
 	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache
