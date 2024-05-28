@@ -19,9 +19,11 @@ public class Player extends Entity{
 	KeyHandler m_keyH;
 
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
-	int pourcentage_energy;
+	static int pourcentage_energy;
 	int score;
 	static int m_coins=40;
+	public static int salaire=0;
+	
     private BufferedImage[][] m_idleImages = new BufferedImage[4][4];
 	int m_indice = 0;
 	int m_delay_anim = 0;
