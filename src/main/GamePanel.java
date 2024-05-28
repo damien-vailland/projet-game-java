@@ -15,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -44,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
 	Player m_player;
 	List<pnj> m_pnj = new ArrayList<>();
 	List<coins> m_coins = new ArrayList<>();
+	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -52,6 +54,10 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Constructeur
 	 */
 	public GamePanel() {
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 640, 290);
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 1300, 650);
+//		object.coins.ajouterCoordonnees(m_coordonee_coin, 900, 470);
+        
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
@@ -61,8 +67,16 @@ public class GamePanel extends JPanel implements Runnable{
 		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
 		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
 		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
-		m_coins.add(new coins(this,1650,800));
 		m_tileM = new TileManager(this);
+		
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 1350, 580); //salle début
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 580, 800); //salle 02
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 1230, 1350); //bureau a gauche
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2100, 450); //entree hall
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2400, 650); //administration
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 3150, 200); // amphi L
+		object.coins.ajouterCoordonnees(m_coordonee_coin, 2300,2100); //bulle
+		object.coins.add_Coins_to_panel(this,m_coins,m_coordonee_coin);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -123,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable{
 						m_tileM.isWall(650,400))
 		;
 		m_tileM.doorUpdate();
+		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
 	}
 	
@@ -197,6 +212,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
             m_player.updatePourcentageEnergy(-5);
+    		object.coins.add_Coins_to_panel(this,m_coins,m_coordonee_coin);
         }
     }
 	
@@ -239,6 +255,8 @@ public class GamePanel extends JPanel implements Runnable{
 	    for (coins coin : m_coins) {
 	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
 	            collectedCoins.add(coin);
+	            entity.Player.AddCoins(100);
+	            object.coins.nb_coins-=1;
 	        }
 	    }
 	    m_coins.removeAll(collectedCoins);
