@@ -30,6 +30,9 @@ public class KeyHandler implements KeyListener{
 		if(code==40) {
 			entity.Player.bas=true;
 		}
+		if(code==69) {
+			tile.TileManager.m_use=true;
+		}
 	}
 
 	@Override
