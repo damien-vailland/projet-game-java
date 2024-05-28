@@ -297,7 +297,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		collectCraie();
 		g2.dispose();
-		
 	}
 	
 	public void collectCoins() {
