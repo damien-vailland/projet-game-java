@@ -135,6 +135,29 @@ public class GamePanel extends JPanel implements Runnable{
 	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
 	}
 	
+	// Affichage de la barre d'argent
+	public void drawCoin(Graphics2D g2) {
+	    int coinBarWidth = 200; // Largeur totale de la barre d'arge,t
+	    int coinBarHeight = 20; // Hauteur de la barre d'argent
+	    int x = 500; // Position X de la barre d'énergie
+	    int y = 10; // Position Y de la barre d'énergie
+
+	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
+	    int currentCoinWidth = (int) (coinBarWidth * (m_player.getCoin())/100);
+
+	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
+	    g2.setColor(Color.BLUE);
+	    g2.fillRect(x, y, coinBarWidth, coinBarHeight);
+
+	    // Dessiner la barre d'énergie actuelle (en vert)
+	    g2.setColor(Color.RED);
+	    g2.fillRect(x, y, currentCoinWidth, coinBarHeight);
+
+	    // Dessiner le contour de la barre d'énergie
+	    g2.setColor(Color.BLACK);
+	    g2.drawRect(x, y, coinBarWidth, coinBarHeight);
+	}
+	
 	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
 	    int x = 650; // Position X pour le mois (à droite)
 	    int y = 25; // Position Y pour le mois
@@ -171,6 +194,7 @@ public class GamePanel extends JPanel implements Runnable{
 		drawEnergyBar(g2);
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
+		drawCoin(g2);
 		g2.dispose();
 	}
 	

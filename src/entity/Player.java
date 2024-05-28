@@ -22,6 +22,7 @@ public class Player extends Entity{
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	int pourcentage_energy;
 	int score;
+	int coin;
 	
 	/**
 	 * Constructeur de Player
@@ -33,6 +34,7 @@ public class Player extends Entity{
 		this.m_keyH = a_keyH;
 		this.pourcentage_energy = 50;
 		this.score = 0;
+		this.coin=40;
 		this.setDefaultValues();
 		this.getPlayerImage();
 	}
@@ -66,6 +68,10 @@ public class Player extends Entity{
 	
 	public int getPourcentageEnergy() {
 	    return pourcentage_energy;
+	}
+	
+	public int getCoin() {
+		return coin;
 	}
 	
 	public int getScore() {
