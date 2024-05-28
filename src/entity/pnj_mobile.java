@@ -33,7 +33,7 @@ public class pnj_mobile extends Entity {
 
     public void getPlayerImage() {
         try {
-            m_idleImage = ImageIO.read(getClass().getResource("/tiles/pnj.png"));
+            m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
