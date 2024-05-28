@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import entity.pnj;
 import entity.coins;
+import entity.Craie;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -15,7 +16,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -43,8 +43,13 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
-	List<pnj> m_tab_pnj = new ArrayList<>();
+	List<pnj> m_tab_pnj_1 = new ArrayList<>();
+	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
+	List<Craie> m_tab_craies;
+	Craie m_craie;
+	List<Object> inventaire;
+	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -56,6 +61,10 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
+		inventaire = new ArrayList<>();
+		m_tab_craies = new ArrayList<>();
+		m_craie = new Craie(this, 700,1000);
+		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
 		 
 		// initialisation: 
@@ -64,7 +73,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		
 		
-		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
+		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
@@ -248,17 +257,29 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+
+		if (m_tileM.m_mapChoose == 1) {
+			for (pnj pnj:m_tab_pnj_1) {
+				pnj.draw(g2);
+			}
+			for (coins coin:m_tab_coins) {
+				coin.draw(g2);
+			}
+		}
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
 		}
-		for (pnj pnj:m_tab_pnj) {
-			pnj.draw(g2);
 		}
-		for (coins coin:m_tab_coins) {
-			coin.draw(g2);
+		if (m_tileM.m_mapChoose == 2) {
+			for (Craie craie : m_tab_craies) {
+				craie.draw(g2);
+		    }
+			for (pnj pnj:m_tab_pnj_2) {
+				pnj.draw(g2);
+			}
 		}
 		
-		
+		collectCraie();
 		g2.dispose();
 		
 	}
@@ -275,20 +296,43 @@ public class GamePanel extends JPanel implements Runnable{
 	    m_tab_coins.removeAll(collectedCoins);
 	}
 	
+	public void collectCraie() {
+        List<Craie> collectedCraies = new ArrayList<>();
+        for (Craie craie : m_tab_craies) {
+            if (m_player.checkCollision(craie.m_x, craie.m_y, TILE_SIZE)) {
+                collectedCraies.add(craie);
+                inventaire.add(craie);
+            }
+        }
+        m_tab_craies.removeAll(collectedCraies);
+    }
+	
 	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
-		if (m_player.checkCollision(m_tab_pnj.get(0).m_x, m_tab_pnj.get(0).m_y, TILE_SIZE)) {
-			g2.drawString("Dialogue pnj 1", m_player.m_x, m_player.m_y - 10);
+		if (m_player.checkCollision(m_tab_pnj_1.get(0).m_x, m_tab_pnj_1.get(0).m_y, TILE_SIZE)) {
+			boolean var = true;
+			if (var) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 103 ?", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
+				inventaire.remove(m_craie);
+				entity.Player.AddCoins(100);
+				var = false;
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+			}
+			
 		}
-		if (m_player.checkCollision(m_tab_pnj.get(1).m_x, m_tab_pnj.get(1).m_y, TILE_SIZE)) {
-			System.out.println("oui");
-			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
+		if (m_player.checkCollision(m_tab_pnj_1.get(1).m_x, m_tab_pnj_1.get(1).m_y, TILE_SIZE)) {
+			g2.drawString("PNJ bureau", m_player.m_x, m_player.m_y - 10);
 		}
-		if (m_player.checkCollision(m_tab_pnj.get(2).m_x, m_tab_pnj.get(2).m_y, TILE_SIZE)) {
-			System.out.println("non");
-			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		if (m_player.checkCollision(m_tab_pnj_1.get(2).m_x, m_tab_pnj_1.get(2).m_y, TILE_SIZE)) {
+			g2.drawString("AMPHI M", m_player.m_x, m_player.m_y - 10);
+		}
+		
+		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
+			g2.drawString("Bienvenue au BDE", m_player.m_x, m_player.m_y - 10);
 		}
 	}
 	
