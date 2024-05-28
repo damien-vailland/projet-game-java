@@ -269,7 +269,6 @@ public class GamePanel extends JPanel implements Runnable{
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
 		}
-		}
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
@@ -281,7 +280,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		collectCraie();
 		g2.dispose();
-		
 	}
 	
 	public void collectCoins() {
