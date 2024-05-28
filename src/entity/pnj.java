@@ -51,13 +51,6 @@ public class pnj extends Entity{
 	}
 	
 	/**
-	 * Mise � jour des donn�es du joueur
-	 */
-	public void update(boolean murG, boolean murD, boolean murH, boolean murB) {
-	}
-	
-	
-	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
 	 * @param a_g2 Graphics2D 
 	 */
