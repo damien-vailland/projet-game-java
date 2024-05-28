@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
-import object.coins;
+import entity.coins;
+import entity.Craie;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -42,8 +43,12 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
-	List<pnj> m_pnj = new ArrayList<>();
-	List<coins> m_coins = new ArrayList<>();
+	List<pnj> m_tab_pnj = new ArrayList<>();
+	List<coins> m_tab_coins = new ArrayList<>();
+	List<Craie> m_tab_craies;
+	Craie m_craie;
+	List<Object> inventaire;
+	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -55,14 +60,16 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
-		m_pnj.add(new pnj(this, 700,350));//salle de classe
-		m_pnj.add(new pnj(this, 1650, 1250));//bureau
-		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
-		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
-		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
-		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
-		m_coins.add(new coins(this,1650,800));
+		inventaire = new ArrayList<>();
+		m_tab_craies = new ArrayList<>();
+		m_craie = new Craie(this, 700,1000);
+		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
+		
+		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
+		
+		entity.coins.create_tab_coordonnees();
+		entity.coins.add_Coins_to_panel(this,m_tab_coins);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -198,6 +205,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
             m_player.updatePourcentageEnergy(-5);
+            entity.coins.add_Coins_to_panel(this,m_tab_coins);
         }
     }
 	
@@ -222,24 +230,73 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
-		for (pnj pnj:m_pnj) {
-			pnj.draw(g2);
+		DialoguePNJ(g2);
+
+		if (m_tileM.m_mapChoose == 1) {
+			for (pnj pnj:m_tab_pnj) {
+				pnj.draw(g2);
+			}
+			for (coins coin:m_tab_coins) {
+				coin.draw(g2);
+			}
 		}
-		for (coins coin:m_coins) {
-			coin.draw(g2);
+		if (m_tileM.m_mapChoose == 2) {
+			for (Craie craie : m_tab_craies) {
+				craie.draw(g2);
+		    }
 		}
+		
+		collectCraie();
 		g2.dispose();
+		
 	}
 	
 	public void collectCoins() {
 	    List<coins> collectedCoins = new ArrayList<>();
-	    for (coins coin : m_coins) {
+	    for (coins coin : m_tab_coins) {
 	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
 	            collectedCoins.add(coin);
+	            entity.Player.AddCoins(100);
+	            entity.coins.nb_coins-=1;
 	        }
 	    }
-	    m_coins.removeAll(collectedCoins);
+	    m_tab_coins.removeAll(collectedCoins);
 	}
-
+	
+	public void collectCraie() {
+        List<Craie> collectedCraies = new ArrayList<>();
+        for (Craie craie : m_tab_craies) {
+            if (m_player.checkCollision(craie.m_x, craie.m_y, TILE_SIZE)) {
+                collectedCraies.add(craie);
+                inventaire.add(craie);
+            }
+        }
+        m_tab_craies.removeAll(collectedCraies);
+    }
+	
+	public void DialoguePNJ(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        
+		if (m_player.checkCollision(m_tab_pnj.get(0).m_x, m_tab_pnj.get(0).m_y, TILE_SIZE)) {
+			boolean var = true;
+			if (var) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
+				inventaire.remove(m_craie);
+				entity.Player.AddCoins(100);
+				var = false;
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+			}
+			
+		}
+		if (m_player.checkCollision(m_tab_pnj.get(1).m_x, m_tab_pnj.get(1).m_y, TILE_SIZE)) {
+			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj.get(2).m_x, m_tab_pnj.get(2).m_y, TILE_SIZE)) {
+			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		}
+	}
 	
 }

@@ -3,11 +3,11 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
-import main.KeyHandler;
 
 /**
  * D�fintition du comportement d'un joueur
@@ -63,5 +63,13 @@ public class pnj extends Entity{
 		a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
+	public static void add_pnj_to_panel(GamePanel a_gp,List<pnj> tab_pnj) {
+		tab_pnj.add(new pnj(a_gp, 700,350));//salle de classe
+		tab_pnj.add(new pnj(a_gp, 1650, 1250));//bureau 
+		tab_pnj.add(new pnj(a_gp, 2900, 1050));//amphi M
+		tab_pnj.add(new pnj(a_gp, 500,2214)); //toilette fille gauche
+		tab_pnj.add(new pnj(a_gp, 2500, 2214)); //toilette garçon droite
+		tab_pnj.add(new pnj(a_gp, 2200, 2050)); //machine à café
+	}
 	
 }
