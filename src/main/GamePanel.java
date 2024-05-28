@@ -11,6 +11,7 @@ import entity.clef;
 import entity.add_students;
 import entity.pnj;
 import entity.pnj_mobile;
+import entity.toilet;
 import entity.coins;
 import entity.Craie;
 import tile.TileManager;
@@ -51,7 +52,8 @@ public class GamePanel extends JPanel implements Runnable{
 	List<pnj> m_tab_pnj_1 = new ArrayList<>();
 	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
-	List<Craie> m_tab_craies = new ArrayList<>();;
+	List<Craie> m_tab_craies = new ArrayList<>();
+	List<toilet> m_tab_toilet = new ArrayList<>();
 	Craie m_craie;
 	List<clef> m_tab_clef= new ArrayList<>();
 	clef m_clef;
@@ -69,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable{
 	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
 	boolean m_quete1;
 	boolean m_quete2;
+	boolean m_quete3;
 	
 	public String currentMonth = "Septembre";
 	
@@ -78,17 +81,19 @@ public class GamePanel extends JPanel implements Runnable{
 	public GamePanel() {
 		m_quete1 = true;
 		m_quete2 = true;
+		m_quete3 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		inventaire = new ArrayList<>();
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
-		m_clef = new clef(this,2400, 800);
+		m_clef = new clef(this,2400, 825);
 		m_tab_clef.add(m_clef);
 		m_tileM = new TileManager(this);
 		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
 
+		entity.toilet.add_toilet_to_panel(this, m_tab_toilet);
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
 		entity.coins.create_tab_coordonnees();
@@ -308,6 +313,12 @@ public class GamePanel extends JPanel implements Runnable{
 			for (coins coin:m_tab_coins) {
 				coin.draw(g2);
 			}
+			for (toilet toilets:m_tab_toilet) {
+				toilets.draw(g2);
+			}
+			for (clef clefs : m_tab_clef) {
+				clefs.draw(g2);
+		    }
 			m_add_prof.draw(g2);
 			m_add_eleve.draw(g2);
 		}
@@ -317,9 +328,6 @@ public class GamePanel extends JPanel implements Runnable{
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
-		    }
-			for (clef clefs : m_tab_clef) {
-				clefs.draw(g2);
 		    }
 			for (pnj pnj:m_tab_pnj_2) {
 				pnj.draw(g2);
@@ -331,6 +339,7 @@ public class GamePanel extends JPanel implements Runnable{
         }
 		
 		collectCraie();
+		collectClef();
 		g2.dispose();
 	}
 	
@@ -411,9 +420,27 @@ public class GamePanel extends JPanel implements Runnable{
 		if (m_player.checkCollision(m_tab_pnj_1.get(2).m_x, m_tab_pnj_1.get(2).m_y, TILE_SIZE)) {
 			g2.drawString("AMPHI M", m_player.m_x, m_player.m_y - 10);
 		}
+		if (m_player.checkCollision(m_tab_pnj_1.get(3).m_x, m_tab_pnj_1.get(3).m_y, TILE_SIZE)) {
+			g2.drawString("J'espère que les toilettes ne vont pas se boucher", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj_1.get(4).m_x, m_tab_pnj_1.get(4).m_y, TILE_SIZE)) {
+			g2.drawString("J'espère que les toilettes ne seront pas HS", m_player.m_x, m_player.m_y - 10);
+		}
 		
 		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
-			g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas ? \n Pour ouvrir le local", m_player.m_x, m_player.m_y - 10);
+			if (m_quete3) {
+				g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas, ", m_player.m_x, m_player.m_y - 20);
+				g2.drawString("Pour ouvrir le local ?", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+
+			}
+			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
+				inventaire.remove(m_clef);
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(20);
+				m_quete3 = false;
+			}
 		}
 		
 		if (m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE)) {
