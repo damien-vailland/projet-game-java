@@ -247,6 +247,7 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     
+    //Afficher des messages si des missions n'ont pas été réalisé au bout d'un certain temps
     public void RappelMission(Graphics2D g2) {
     	g2.setColor(Color.BLACK);
     	g2.setFont(new Font("Arial", Font.BOLD, 12));
