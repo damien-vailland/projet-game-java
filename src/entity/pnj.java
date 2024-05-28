@@ -63,14 +63,17 @@ public class pnj extends Entity{
 		a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
-	public static void add_pnj_to_panel(GamePanel a_gp,List<pnj> tab_pnj) {
-		tab_pnj.add(new pnj(a_gp, 700,350));//salle de classe
-		tab_pnj.add(new pnj(a_gp, 1650, 1250));//bureau 
-		tab_pnj.add(new pnj(a_gp, 2900, 1050));//amphi M
-		tab_pnj.add(new pnj(a_gp, 500,2214)); //toilette fille gauche
-		tab_pnj.add(new pnj(a_gp, 2500, 2214)); //toilette garçon droite
-		tab_pnj.add(new pnj(a_gp, 2200, 2050)); //machine à café
-		tab_pnj.add(new pnj(a_gp, 2400, 450)); //bureau julien gavard
+	public static void add_pnj_to_panel(GamePanel a_gp,List<pnj> tab_pnj_1,List<pnj> tab_pnj_2) {
+		tab_pnj_1.add(new pnj(a_gp, 700,350));//salle de classe 01
+		tab_pnj_1.add(new pnj(a_gp, 1650, 1250));//bureau 
+		tab_pnj_1.add(new pnj(a_gp, 2900, 1050));//amphi M
+		tab_pnj_1.add(new pnj(a_gp, 500,2214)); //toilette fille gauche
+		tab_pnj_1.add(new pnj(a_gp, 2500, 2214)); //toilette garçon droite
+		tab_pnj_1.add(new pnj(a_gp, 2200, 2050)); //machine à café
+		tab_pnj_1.add(new pnj(a_gp, 2400, 450)); //bureau julien gavard
+		
+		tab_pnj_2.add(new pnj(a_gp, 700,700)); //salle de classe 102
+		tab_pnj_2.add(new pnj(a_gp, 2400, 650)); //BDE
 	}
 	
 }

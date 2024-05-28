@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.add_teachers;
 import entity.pnj;
 import entity.pnj_mobile;
 import entity.coins;
@@ -43,17 +44,19 @@ public class GamePanel extends JPanel implements Runnable{
 	// Cr�ation des diff�rentes instances (Player, KeyHandler, TileManager, GameThread ...)
 	KeyHandler m_keyH;
 	Thread m_gameThread;
-	public Player m_player;
-	List<pnj> m_tab_pnj = new ArrayList<>();
+	public static Player m_player;
+	List<pnj> m_tab_pnj_1 = new ArrayList<>();
+	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
-	List<Craie> m_craies;
+	List<Craie> m_tab_craies;
 	Craie m_craie;
 	List<Object> inventaire;
-	List<pnj> m_pnj = new ArrayList<>();
-	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
-	List<coins> m_coins = new ArrayList<>();
+
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
+	add_teachers m_facture_prof;
+	public static int m_nb_teacher=0;
+	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
 	boolean m_quete1;
 	
 	String currentMonth = "Septembre";
@@ -64,26 +67,20 @@ public class GamePanel extends JPanel implements Runnable{
 	public GamePanel() {
 		m_quete1 = true;
 		m_FPS = 60;				
-		m_keyH = new KeyHandler();
+		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		inventaire = new ArrayList<>();
-		m_craies = new ArrayList<>();
+		m_tab_craies = new ArrayList<>();
 		m_craie = new Craie(this, 700,1000);
-		m_craies.add(m_craie);
-		m_pnj.add(new pnj(this, 700,350));//salle de classe
-		m_pnj.add(new pnj(this, 1650, 1250));//bureau 
-		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
-		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
-		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
-		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
-		m_pnj.add(new pnj(this, 2400, 450)); //bureau julien gavard
+		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
-		m_pnj_mobile.add(new pnj_mobile(this, 2250, 1800, 2250, 1400));
-		
-		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
+
+		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
+		
+		m_facture_prof = new add_teachers(this,1150, 1550);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -95,6 +92,9 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Lancement du thread principal
 	 */
+	public int gameState=1;
+	public final int playState =1; 
+	public final int pauseState=2; 
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
@@ -138,6 +138,7 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
+		if (gameState==playState) {
 		m_player.update(m_tileM.isWall(640, 380),
 						m_tileM.isWall(670, 380),
 						m_tileM.isWall(650,375),
@@ -146,7 +147,12 @@ public class GamePanel extends JPanel implements Runnable{
 		m_tileM.doorUpdate();
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
+		entity.add_teachers.ajout_prof();
 	}
+		else if (gameState==pauseState) {
+			//jeu arrêté
+		}
+		}
 	
 	/**
 	 * Affichage des �l�ments
@@ -220,6 +226,7 @@ public class GamePanel extends JPanel implements Runnable{
         	currentMonth = months[currentMonthIndex];
             m_player.updatePourcentageEnergy(-5);
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
+			entity.Player.AddCoins(entity.Player.salaire);
         }
     }
 	
@@ -235,6 +242,17 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
+    public void drawPauseScreen( Graphics2D g2) {
+    	String m_text="GAME PAUSED"; 
+    	int length=(int)g2.getFontMetrics().getStringBounds(m_text, g2).getWidth(); 
+    	int x=450;
+    	int y=400;
+    	g2.setColor(Color.red);
+    	g2.setFont(new Font("Arial", Font.BOLD, 50));
+    	g2.drawString(m_text, x, y);
+    	
+    }
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -245,16 +263,27 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
-		for (pnj pnj:m_tab_pnj) {
-			pnj.draw(g2);
+		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+
+		if (m_tileM.m_mapChoose == 1) {
+			for (pnj pnj:m_tab_pnj_1) {
+				pnj.draw(g2);
+			}
+			for (coins coin:m_tab_coins) {
+				coin.draw(g2);
+			}
+			m_facture_prof.draw(g2);
+		}
+		if (gameState==pauseState) {
+			drawPauseScreen( g2);
 		}
 		if (m_tileM.m_mapChoose == 2) {
-			for (Craie craie : m_craies) {
+			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
 		    }
-		}
-		for (coins coin:m_tab_coins) {
-			coin.draw(g2);
+			for (pnj pnj:m_tab_pnj_2) {
+				pnj.draw(g2);
+			}
 		}
 		for (pnj_mobile p : m_pnj_mobile) {
             p.update();
@@ -281,25 +310,27 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void collectCraie() {
         List<Craie> collectedCraies = new ArrayList<>();
-        for (Craie craie : m_craies) {
+        for (Craie craie : m_tab_craies) {
             if (m_player.checkCollision(craie.m_x, craie.m_y, TILE_SIZE)) {
                 collectedCraies.add(craie);
                 inventaire.add(craie);
             }
         }
-        m_craies.removeAll(collectedCraies);
+        m_tab_craies.removeAll(collectedCraies);
     }
 	
 	public void DialoguePNJ(Graphics2D g2 ) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
-		if (m_player.checkCollision(m_pnj.get(0).m_x, m_pnj.get(0).m_y, TILE_SIZE)) {
+
+		if (m_player.checkCollision(m_tab_pnj_1.get(0).m_x, m_tab_pnj_1.get(0).m_y, TILE_SIZE)) {
 			
 			if (m_quete1) {
 				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
 			}else {
 				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+
 			}
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
@@ -310,11 +341,20 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			
 		}
-		if (m_player.checkCollision(m_pnj.get(1).m_x, m_pnj.get(1).m_y, TILE_SIZE)) {
-			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
+		if (m_player.checkCollision(m_tab_pnj_1.get(1).m_x, m_tab_pnj_1.get(1).m_y, TILE_SIZE)) {
+			g2.drawString("PNJ bureau", m_player.m_x, m_player.m_y - 10);
 		}
-		if (m_player.checkCollision(m_pnj.get(2).m_x, m_pnj.get(2).m_y, TILE_SIZE)) {
-			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		if (m_player.checkCollision(m_tab_pnj_1.get(2).m_x, m_tab_pnj_1.get(2).m_y, TILE_SIZE)) {
+			g2.drawString("AMPHI M", m_player.m_x, m_player.m_y - 10);
+		}
+		
+		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
+			g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas ? \n Pour ouvrir le local", m_player.m_x, m_player.m_y - 10);
+		}
+		
+		if (m_player.checkCollision(m_facture_prof.m_x, m_facture_prof.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("300€ puis 10€/mois", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
 		}
 		
 		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
@@ -329,5 +369,6 @@ public class GamePanel extends JPanel implements Runnable{
 			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
 		}
 	}
+
 	
 }
