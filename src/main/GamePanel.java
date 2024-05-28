@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import tile.TileManager;
 
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -133,33 +134,47 @@ public class GamePanel extends JPanel implements Runnable{
 	    // Dessiner le contour de la barre d'énergie
 	    g2.setColor(Color.BLACK);
 	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	    
+	    g2.setColor(Color.BLACK);
+	    String text = "Energie";
+	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
+	    int textX = x + (energyBarWidth - metrics.stringWidth(text)) / 2;
+	    int textY = y + ((energyBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+	    g2.drawString(text, textX, textY);
 	}
 	
 	// Affichage de la barre d'argent
 	public void drawCoin(Graphics2D g2) {
 	    int coinBarWidth = 200; // Largeur totale de la barre d'arge,t
 	    int coinBarHeight = 20; // Hauteur de la barre d'argent
-	    int x = 500; // Position X de la barre d'énergie
+	    int x = 250; // Position X de la barre d'énergie
 	    int y = 10; // Position Y de la barre d'énergie
 
 	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
 	    int currentCoinWidth = (int) (coinBarWidth * (m_player.getCoin())/100);
 
 	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
-	    g2.setColor(Color.BLUE);
+	    g2.setColor(Color.GRAY);
 	    g2.fillRect(x, y, coinBarWidth, coinBarHeight);
 
 	    // Dessiner la barre d'énergie actuelle (en vert)
-	    g2.setColor(Color.RED);
+	    g2.setColor(Color.YELLOW);
 	    g2.fillRect(x, y, currentCoinWidth, coinBarHeight);
 
 	    // Dessiner le contour de la barre d'énergie
 	    g2.setColor(Color.BLACK);
 	    g2.drawRect(x, y, coinBarWidth, coinBarHeight);
+	    
+	    g2.setColor(Color.BLACK);
+	    String text = "Coin";
+	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
+	    int textX = x + (coinBarWidth - metrics.stringWidth(text)) / 2;
+	    int textY = y + ((coinBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+	    g2.drawString(text, textX, textY);
 	}
 	
 	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
-	    int x = 650; // Position X pour le mois (à droite)
+	    int x = 1000; // Position X pour le mois (à droite)
 	    int y = 25; // Position Y pour le mois
 	    g2.setColor(Color.WHITE);
 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
@@ -175,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 	
     public void drawScore(Graphics2D g2) {
-    	int x = 400; // Position X pour le mois (à droite)
+    	int x = 800; // Position X pour le mois (à droite)
  	    int y = 25 ; // Position Y pour le mois
  	    g2.setColor(Color.WHITE);
  	    g2.setFont(new Font("Arial", Font.BOLD, 20));
