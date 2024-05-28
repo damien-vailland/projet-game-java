@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JPanel;
 
@@ -16,24 +17,26 @@ import java.awt.Graphics2D;
  */
 public class GamePanel extends JPanel implements Runnable{
 	
-	//Paramètres de l'écran
+	//Paramï¿½tres de l'ï¿½cran
 	final int ORIGINAL_TILE_SIZE = 16; 							// une tuile de taille 16x16
-	final int SCALE = 3; 										// échelle utilisée pour agrandir l'affichage
+	final int SCALE = 3; 										// ï¿½chelle utilisï¿½e pour agrandir l'affichage
 	public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; 	// 48x48
 	public final int MAX_SCREEN_COL = 16;
-	public final int MAX_SCREE_ROW = 12; 					 	// ces valeurs donnent une résolution 4:3
+	public final int MAX_SCREE_ROW = 12; 					 	// ces valeurs donnent une rï¿½solution 4:3
 	public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 pixels
 	public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;	// 576 pixels
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
 	
-	// Création des différentes instances (Player, KeyHandler, TileManager, GameThread ...)
+	// Crï¿½ation des diffï¿½rentes instances (Player, KeyHandler, TileManager, GameThread ...)
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
 	TileManager m_tileM;
-		
+	
+	String currentMonth = "Septembre";
+	
 	/**
 	 * Constructeur
 	 */
@@ -65,10 +68,10 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		while(m_gameThread != null) { //Tant que le thread du jeu est actif
 			
-			//Permet de mettre à jour les différentes variables du jeu
+			//Permet de mettre ï¿½ jour les diffï¿½rentes variables du jeu
 			this.update();
 			
-			//Dessine sur l'écran le personnage et la map avec les nouvelles informations. la méthode "paintComponent" doit obligatoirement être appelée avec "repaint()"
+			//Dessine sur l'ï¿½cran le personnage et la map avec les nouvelles informations. la mï¿½thode "paintComponent" doit obligatoirement ï¿½tre appelï¿½e avec "repaint()"
 			this.repaint();
 			
 			//Calcule le temps de pause du thread
@@ -92,20 +95,63 @@ public class GamePanel extends JPanel implements Runnable{
 	
 
 	/**
-	 * Mise à jour des données des entités
+	 * Mise ï¿½ jour des donnï¿½es des entitï¿½s
 	 */
 	public void update() {
 		m_player.update();
 	}
 	
-	/**
-	 * Affichage des éléments
-	 */
+	public void drawEnergyBar(Graphics2D g2) {
+	    int energyBarWidth = 200; // Largeur totale de la barre d'Ã©nergie
+	    int energyBarHeight = 20; // Hauteur de la barre d'Ã©nergie
+	    int x = 10; // Position X de la barre d'Ã©nergie
+	    int y = 10; // Position Y de la barre d'Ã©nergie
+
+	    // Calculer la largeur de la barre d'Ã©nergie en fonction de l'Ã©nergie du joueur
+	    int currentEnergyWidth = (int) (energyBarWidth * (m_player.getPourcentageEnergy() / 100.0));
+
+	    // Dessiner l'arriÃ¨re-plan de la barre d'Ã©nergie (en gris)
+	    g2.setColor(Color.GRAY);
+	    g2.fillRect(x, y, energyBarWidth, energyBarHeight);
+
+	    // Dessiner la barre d'Ã©nergie actuelle (en vert)
+	    g2.setColor(Color.GREEN);
+	    g2.fillRect(x, y, currentEnergyWidth, energyBarHeight);
+
+	    // Dessiner le contour de la barre d'Ã©nergie
+	    g2.setColor(Color.BLACK);
+	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	}
+	
+	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
+	    int x = SCREEN_WIDTH - 100; // Position X pour le mois (Ã  droite)
+	    int y = 25; // Position Y pour le mois
+	    g2.setColor(Color.WHITE);
+	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+	    g2.drawString(currentMonth, x, y);
+	}
+	
+    public void updateCurrentMonth(long startTime, long monthDuration, String[] months) {
+        int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
+        currentMonth = months[currentMonthIndex];
+    }
+	
+    public void drawScore(Graphics2D g2) {
+    	int x = 400; // Position X pour le mois (Ã  droite)
+ 	    int y = 25 ; // Position Y pour le mois
+ 	    g2.setColor(Color.WHITE);
+ 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+ 	    g2.drawString("Score : " + m_player.getScore(), x, y);
+    }
+    
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
+		drawEnergyBar(g2);
+		drawCurrentMonth(g2, currentMonth);
+		drawScore(g2);
 		g2.dispose();
 	}
 	
