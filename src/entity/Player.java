@@ -19,6 +19,7 @@ public class Player extends Entity{
 	KeyHandler m_keyH;
 	int pourcentage_energy;
 	int score;
+	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	
 	/**
 	 * Constructeur de Player
@@ -38,8 +39,8 @@ public class Player extends Entity{
 	 * Initialisation des donn�es membres avec des valeurs par d�faut
 	 */
 	protected void setDefaultValues() {
-		m_x = 100;
-		m_y = 100;
+		m_x = 632;
+		m_y = 352;
 		m_speed = 4;
 	}
 	
@@ -67,10 +68,20 @@ public class Player extends Entity{
 	 * Mise � jour des donn�es du joueur
 	 */
 	public void update() {
-		
-		
-		
+		if(gauche) {
+			m_gp.scrollOffsetX += m_speed;
+		}
+		if(droite) {
+			m_gp.scrollOffsetX -=  m_speed;
+		}
+		if(haut){
+			m_gp.scrollOffsetY += m_speed;
+		}
+		if(bas){
+			m_gp.scrollOffsetY -=  m_speed;
+		}
 	}
+	
 	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
