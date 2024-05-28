@@ -156,32 +156,28 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// Affichage de la barre d'argent
 	public void drawCoin(Graphics2D g2) {
-	    int coinBarWidth = 200; // Largeur totale de la barre d'arge,t
+	    int coinBarWidth = 200; // Largeur totale de la barre d'argent
 	    int coinBarHeight = 20; // Hauteur de la barre d'argent
 	    int x = 250; // Position X de la barre d'énergie
 	    int y = 10; // Position Y de la barre d'énergie
 
-	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
-	    int currentCoinWidth = (int) (coinBarWidth * (m_player.getCoin())/100);
-
-	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
-	    g2.setColor(Color.GRAY);
+	    // Arrière-plan de la barre d'argent
+	    g2.setColor(Color.YELLOW);
 	    g2.fillRect(x, y, coinBarWidth, coinBarHeight);
 
-	    // Dessiner la barre d'énergie actuelle (en vert)
-	    g2.setColor(Color.YELLOW);
-	    g2.fillRect(x, y, currentCoinWidth, coinBarHeight);
-
-	    // Dessiner le contour de la barre d'énergie
+	    // Dessiner le contour de la barre d'argent 
 	    g2.setColor(Color.BLACK);
 	    g2.drawRect(x, y, coinBarWidth, coinBarHeight);
 	    
 	    g2.setColor(Color.BLACK);
-	    String text = "Coin";
+	    int coinValue = m_player.getCoin(); 
+	    String text = String.valueOf(coinValue)+"€"; // Convertir l'entier en chaîne de caractères
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
-	    int textX = x + (coinBarWidth - metrics.stringWidth(text)) / 2;
+	    int textWidth = metrics.stringWidth(text);
+	    int textX = x + (coinBarWidth - textWidth) / 2;
 	    int textY = y + ((coinBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
 	    g2.drawString(text, textX, textY);
+
 	}
 	
 	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
