@@ -18,7 +18,7 @@ import main.GamePanel;
 public class TileManager {
 	GamePanel m_gp;			//panel du jeu principal
 	Tile[] m_tile;			//tableau de toutes les tiles possibles dans le jeu
-	int m_maxTiles = 30;	//nombre maximum de tiles chargeable dans le jeu
+	int m_maxTiles = 25;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
 	/**
 	 * Constructeur
@@ -76,8 +76,11 @@ public class TileManager {
 			m_tile[21] = new Tile(true);
 			m_tile[21].m_image = ImageIO.read(getClass().getResource("/tiles/wall_corner_ul.png"));
 			
-			
-			
+			m_tile[3] = new Tile(false);
+			m_tile[3].m_image = ImageIO.read(getClass().getResource("/tiles/door_h.png"));
+
+			m_tile[5] = new Tile(false);
+			m_tile[5].m_image = ImageIO.read(getClass().getResource("/tiles/door_v.png"));
 			
 			m_tile[4] = new Tile(false);
 			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
@@ -153,7 +156,8 @@ public class TileManager {
 						&& m_mapTileNum[col][row + 1] != 1
 						&& m_mapTileNum[col - 1][row] != 1
 						&& m_mapTileNum[col + 1][row] != 1) {
-							tileNum = 12;
+//							tileNum = 12;
+							tileNum = 11;
 						}
 						if(m_mapTileNum[col][row - 1] != 1 
 						&& m_mapTileNum[col][row + 1] == 1
@@ -189,7 +193,8 @@ public class TileManager {
 						&& m_mapTileNum[col][row + 1] == 1
 						&& m_mapTileNum[col - 1][row] != 1
 						&& m_mapTileNum[col + 1][row] != 1) {
-							tileNum = 18;
+							tileNum = 11;
+//							tileNum = 18;
 						}
 						if(m_mapTileNum[col][row - 1] != 1 
 						&& m_mapTileNum[col][row + 1] == 1
@@ -199,18 +204,28 @@ public class TileManager {
 						}
 						if(m_mapTileNum[col][row - 1] == 1 
 						&& m_mapTileNum[col][row + 1] != 1
-						&& m_mapTileNum[col - 1][row] == 1
-						&& m_mapTileNum[col + 1][row] == 1) {
+						&& (m_mapTileNum[col - 1][row] == 1 || m_mapTileNum[col - 1][row] == 3)
+						&& (m_mapTileNum[col + 1][row] == 1 || m_mapTileNum[col + 1][row] == 3)) {
 							tileNum = 20;
 						}
 
 						if(m_mapTileNum[col][row - 1] == 1 
 						&& m_mapTileNum[col][row + 1] != 1
 						&& m_mapTileNum[col - 1][row] == 1
-						&& m_mapTileNum[col + 1][row] != 1) {
+						&& m_mapTileNum[col + 1][row] != 1
+						&& m_mapTileNum[col + 1][row] != 3 ) {
 							tileNum = 21;
-						}
-						
+						}	
+					}
+				}
+				if(tileNum == 3) {
+					if(row < m_gp.MAX_SCREEN_ROW-1 && col < m_gp.MAX_SCREEN_COL-1) {
+						if(m_mapTileNum[col][row - 1] == 1 
+							&& m_mapTileNum[col][row + 1] == 1
+							&& m_mapTileNum[col - 1][row] != 1
+							&& m_mapTileNum[col + 1][row] != 1) {
+								tileNum = 5;
+							}	
 					}
 				}
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
