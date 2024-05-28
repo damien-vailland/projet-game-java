@@ -20,8 +20,8 @@ public class GamePanel extends JPanel implements Runnable{
 	final int ORIGINAL_TILE_SIZE = 16; 							// une tuile de taille 16x16
 	final int SCALE = 3; 										// �chelle utilis�e pour agrandir l'affichage
 	public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; 	// 48x48
-	public final int MAX_SCREEN_COL = 71;
-	public final int MAX_SCREEN_ROW = 49; 					 	// ces valeurs donnent une r�solution 4:3
+	public final int MAX_SCREEN_COL = 73;
+	public final int MAX_SCREEN_ROW = 51; 					 	// ces valeurs donnent une r�solution 4:3
 	public final int SCREEN_WIDTH = 1280 ; // 768 pixels
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
