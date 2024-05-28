@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.add_teachers;
+import entity.clef;
 import entity.add_students;
 import entity.pnj;
 import entity.pnj_mobile;
@@ -50,8 +51,10 @@ public class GamePanel extends JPanel implements Runnable{
 	List<pnj> m_tab_pnj_1 = new ArrayList<>();
 	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
-	List<Craie> m_tab_craies;
+	List<Craie> m_tab_craies = new ArrayList<>();;
 	Craie m_craie;
+	List<clef> m_tab_clef= new ArrayList<>();
+	clef m_clef;
 	List<Object> inventaire;
 
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
@@ -79,9 +82,10 @@ public class GamePanel extends JPanel implements Runnable{
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		inventaire = new ArrayList<>();
-		m_tab_craies = new ArrayList<>();
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
+		m_clef = new clef(this,2400, 800);
+		m_tab_clef.add(m_clef);
 		m_tileM = new TileManager(this);
 		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
 
@@ -138,7 +142,6 @@ public class GamePanel extends JPanel implements Runnable{
 				nextDrawTime += drawInterval;
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -315,6 +318,9 @@ public class GamePanel extends JPanel implements Runnable{
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
 		    }
+			for (clef clefs : m_tab_clef) {
+				clefs.draw(g2);
+		    }
 			for (pnj pnj:m_tab_pnj_2) {
 				pnj.draw(g2);
 			}
@@ -323,7 +329,6 @@ public class GamePanel extends JPanel implements Runnable{
             p.update();
             p.draw(g2);
         }
-		
 		
 		collectCraie();
 		g2.dispose();
@@ -350,6 +355,16 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         m_tab_craies.removeAll(collectedCraies);
+    }
+	public void collectClef() {
+        List<clef> collectedclefs = new ArrayList<>();
+        for (clef clefs : m_tab_clef) {
+            if (m_player.checkCollision(clefs.m_x, clefs.m_y, TILE_SIZE)) {
+            	collectedclefs.add(clefs);
+                inventaire.add(clefs);
+            }
+        }
+        m_tab_clef.removeAll(collectedclefs);
     }
 	
 	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
