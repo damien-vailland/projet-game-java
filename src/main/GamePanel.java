@@ -338,7 +338,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 		if (m_player.checkCollision(m_facture_prof.m_x, m_facture_prof.m_y, TILE_SIZE)) {
-			g2.drawString("Appuyez sur T pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("Appuyez sur E pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
 			g2.drawString("300€ puis 10€/mois", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
 		}
 	}
