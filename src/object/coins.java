@@ -1,7 +1,5 @@
 package object;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +11,12 @@ public class coins extends Object{
 
 	public static int nb_max_coins = 7;
 	public static int nb_coins=0;
+	public static List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	
 	public coins(GamePanel a_gp,int x,int y) {
 		m_name = "coins";
 		try {
-			m_Image = ImageIO.read(getClass().getResource("/tiles/coins.png"));
+			m_Image = ImageIO.read(getClass().getResource("/object/coins.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -26,14 +25,6 @@ public class coins extends Object{
 		m_gp=a_gp;
 	}
 
-	public void draw(Graphics2D a_g2) {
-		// r�cup�re l'image du joueur
-		BufferedImage l_image = m_Image;
-		int screenX = m_x + m_gp.scrollOffsetX;
-	    int screenY = m_y + m_gp.scrollOffsetY;
-		// affiche le personnage avec l'image "image", avec les coordonn�es x et y, et de taille tileSize (16x16) sans �chelle, et 48x48 avec �chelle)
-		a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
-	}
 
 	public static void ajouterCoordonnees(List<List<Integer>> liste, int x, int y) {
         List<Integer> paire = new ArrayList<>();
@@ -42,9 +33,9 @@ public class coins extends Object{
         liste.add(paire);
     }
 	
-	public static void add_Coins_to_panel(GamePanel a_gp,List<coins> tab_coins, List<List<Integer>> coordonee_coin) {
+	public static void add_Coins_to_panel(GamePanel a_gp,List<coins> tab_coins) {
 		if(nb_coins<nb_max_coins) {
-			for (List<Integer> coordonnees : coordonee_coin) {
+			for (List<Integer> coordonnees : m_coordonee_coin) {
 				boolean coordonneesExistantes = false;
 	            for (coins coin : tab_coins) {
 	                if(coin.m_x == coordonnees.get(0) && coin.m_y == coordonnees.get(1)) {
@@ -58,5 +49,15 @@ public class coins extends Object{
 				}
 			}
 		}
+	}
+	
+	public static void create_tab_coordonnees() {
+		ajouterCoordonnees(m_coordonee_coin, 1350, 580); //salle début
+		ajouterCoordonnees(m_coordonee_coin, 580, 800); //salle 02
+		ajouterCoordonnees(m_coordonee_coin, 1230, 1350); //bureau a gauche
+		ajouterCoordonnees(m_coordonee_coin, 2100, 450); //entree hall
+		ajouterCoordonnees(m_coordonee_coin, 2400, 650); //administration
+		ajouterCoordonnees(m_coordonee_coin, 3150, 200); // amphi L
+		ajouterCoordonnees(m_coordonee_coin, 2300,2100); //bulle
 	}
 }
