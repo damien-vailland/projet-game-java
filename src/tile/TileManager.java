@@ -21,7 +21,7 @@ public class TileManager {
 	int m_maxTiles = 25;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
 	public static boolean m_use=false;
-	int m_mapChoose = 1;
+	public int m_mapChoose = 1;
 	/**
 	 * Constructeur
 	 * @param gp

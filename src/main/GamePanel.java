@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
+import object.Craie;
 import object.coins;
 import tile.TileManager;
 
@@ -43,6 +44,9 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
+	List<Craie> m_craies;
+	Craie m_craie;
+	List<Object> inventaire;
 	List<pnj> m_pnj = new ArrayList<>();
 	List<coins> m_coins = new ArrayList<>();
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
@@ -61,6 +65,10 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
+		inventaire = new ArrayList<>();
+		m_craies = new ArrayList<>();
+		m_craie = new Craie(this, 700,1000);
+		m_craies.add(m_craie);
 		m_pnj.add(new pnj(this, 700,350));//salle de classe
 		m_pnj.add(new pnj(this, 1650, 1250));//bureau 
 		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
@@ -238,6 +246,11 @@ public class GamePanel extends JPanel implements Runnable{
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		if (m_tileM.m_mapChoose == 2) {
+			for (Craie craie : m_craies) {
+				craie.draw(g2);
+		    }
+		}
 		for (pnj pnj:m_pnj) {
 			pnj.draw(g2);
 		}
@@ -245,7 +258,7 @@ public class GamePanel extends JPanel implements Runnable{
 			coin.draw(g2);
 		}
 		
-		
+		collectCraie();
 		g2.dispose();
 		
 	}
@@ -262,19 +275,38 @@ public class GamePanel extends JPanel implements Runnable{
 	    m_coins.removeAll(collectedCoins);
 	}
 	
+	public void collectCraie() {
+        List<Craie> collectedCraies = new ArrayList<>();
+        for (Craie craie : m_craies) {
+            if (m_player.checkCollision(craie.m_x, craie.m_y, TILE_SIZE)) {
+                collectedCraies.add(craie);
+                inventaire.add(craie);
+            }
+        }
+        m_craies.removeAll(collectedCraies);
+    }
+	
 	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
 		if (m_player.checkCollision(m_pnj.get(0).m_x, m_pnj.get(0).m_y, TILE_SIZE)) {
-			g2.drawString("Dialogue pnj 1", m_player.m_x, m_player.m_y - 10);
+			boolean var = true;
+			if (var) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
+				inventaire.remove(m_craie);
+				entity.Player.AddCoins(100);
+				var = false;
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+			}
+			
 		}
 		if (m_player.checkCollision(m_pnj.get(1).m_x, m_pnj.get(1).m_y, TILE_SIZE)) {
-			System.out.println("oui");
 			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
 		}
 		if (m_player.checkCollision(m_pnj.get(2).m_x, m_pnj.get(2).m_y, TILE_SIZE)) {
-			System.out.println("non");
 			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
 		}
 	}
