@@ -19,7 +19,7 @@ public class Player extends Entity{
 	KeyHandler m_keyH;
 
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
-	static int pourcentage_energy;
+	static float pourcentage_energy;
 	int score;
 	public static int salaire=0;
 	public static int m_coins=40;
@@ -79,7 +79,7 @@ public class Player extends Entity{
         }
 	}
 	
-	public int getPourcentageEnergy() {
+	public float getPourcentageSatisfaction() {
 	    return pourcentage_energy;
 	}
 	
@@ -137,9 +137,9 @@ public class Player extends Entity{
 	}
 	
 	
-	public void updatePourcentageEnergy(int x) {
-		if (pourcentage_energy + x < 100) {
-			pourcentage_energy += x;
+	public void updatePourcentageSatisfaction(float x) {
+		if (pourcentage_energy * x < 100) {
+			pourcentage_energy = pourcentage_energy*x;
 		}
 		else {
 			pourcentage_energy = 100;

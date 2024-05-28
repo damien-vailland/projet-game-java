@@ -13,6 +13,9 @@ public class add_students extends Entity{
 
 	public static GamePanel m_gp;
 	public static boolean nouvel_eleve;
+	public static int static_x;
+	public static int static_y;
+	
 	
 	public add_students(GamePanel a_gp,int x,int y) {
 		try {
@@ -22,6 +25,8 @@ public class add_students extends Entity{
 		}
 		m_x=x;
 		m_y=y;
+		static_x=x;
+		static_y=y;
 		m_gp=a_gp;
 	}
 	
@@ -35,10 +40,8 @@ public class add_students extends Entity{
 	}
 	
 	public static void ajout_eleve() {
-		if(nouvel_eleve) {
-			entity.Player.AddCoins(50);
-			main.GamePanel.m_nb_student+=1;
-			nouvel_eleve=false;
-		}
+		entity.Player.AddCoins(50);
+		main.GamePanel.m_nb_student+=1;
+		nouvel_eleve=false;
 	}
 }
