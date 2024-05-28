@@ -7,8 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
-import object.coins;
-import object.coffee;
+import entity.coins;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -16,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -43,8 +43,8 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
-	List<pnj> m_pnj = new ArrayList<>();
-	List<coins> m_coins = new ArrayList<>();
+	List<pnj> m_tab_pnj = new ArrayList<>();
+	List<coins> m_tab_coins = new ArrayList<>();
 	TileManager m_tileM;
 	
 	public String currentMonth = "Septembre";
@@ -56,15 +56,12 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
-		m_pnj.add(new pnj(this, 700,350));//salle de classe
-		m_pnj.add(new pnj(this, 1650, 1250));//bureau
-		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
-		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
-		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
-		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
-		//m_coffee.add(new coffee(this, ));
-		m_coins.add(new coins(this,1650,800));
 		m_tileM = new TileManager(this);
+		
+		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
+		
+		entity.coins.create_tab_coordonnees();
+		entity.coins.add_Coins_to_panel(this,m_tab_coins);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -125,6 +122,7 @@ public class GamePanel extends JPanel implements Runnable{
 						m_tileM.isWall(650,400))
 		;
 		m_tileM.doorUpdate();
+		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
 		m_tileM.coffeeUpdate();
 	}
@@ -205,6 +203,7 @@ public class GamePanel extends JPanel implements Runnable{
         		x*=2;
         	}
             m_player.updatePourcentageEnergy(x);
+            entity.coins.add_Coins_to_panel(this,m_tab_coins);
         }
     }
 	
@@ -229,24 +228,46 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
-		for (pnj pnj:m_pnj) {
+		DialoguePNJ(g2);
+		for (pnj pnj:m_tab_pnj) {
 			pnj.draw(g2);
 		}
-		for (coins coin:m_coins) {
+		for (coins coin:m_tab_coins) {
 			coin.draw(g2);
 		}
+		
+		
 		g2.dispose();
+		
 	}
 	
 	public void collectCoins() {
 	    List<coins> collectedCoins = new ArrayList<>();
-	    for (coins coin : m_coins) {
+	    for (coins coin : m_tab_coins) {
 	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
 	            collectedCoins.add(coin);
+	            entity.Player.AddCoins(100);
+	            entity.coins.nb_coins-=1;
 	        }
 	    }
-	    m_coins.removeAll(collectedCoins);
+	    m_tab_coins.removeAll(collectedCoins);
 	}
-
+	
+	public void DialoguePNJ(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        
+		if (m_player.checkCollision(m_tab_pnj.get(0).m_x, m_tab_pnj.get(0).m_y, TILE_SIZE)) {
+			g2.drawString("Dialogue pnj 1", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj.get(1).m_x, m_tab_pnj.get(1).m_y, TILE_SIZE)) {
+			System.out.println("oui");
+			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj.get(2).m_x, m_tab_pnj.get(2).m_y, TILE_SIZE)) {
+			System.out.println("non");
+			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		}
+	}
 	
 }
