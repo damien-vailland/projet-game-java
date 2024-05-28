@@ -60,7 +60,7 @@ public class Player extends Entity{
 	public void getPlayerImage() {
 		//gestion des expections 
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/player/superhero.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/player/main-1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
