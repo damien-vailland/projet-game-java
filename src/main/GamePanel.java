@@ -62,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
 		m_pnj.add(new pnj(this, 700,350));//salle de classe
-		m_pnj.add(new pnj(this, 1650, 1250));//bureau
+		m_pnj.add(new pnj(this, 1650, 1250));//bureau 
 		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
 		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
 		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
@@ -237,13 +237,17 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
+		DialoguePNJ(g2);
 		for (pnj pnj:m_pnj) {
 			pnj.draw(g2);
 		}
 		for (coins coin:m_coins) {
 			coin.draw(g2);
 		}
+		
+		
 		g2.dispose();
+		
 	}
 	
 	public void collectCoins() {
@@ -257,6 +261,22 @@ public class GamePanel extends JPanel implements Runnable{
 	    }
 	    m_coins.removeAll(collectedCoins);
 	}
-
+	
+	public void DialoguePNJ(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        
+		if (m_player.checkCollision(m_pnj.get(0).m_x, m_pnj.get(0).m_y, TILE_SIZE)) {
+			g2.drawString("Dialogue pnj 1", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_pnj.get(1).m_x, m_pnj.get(1).m_y, TILE_SIZE)) {
+			System.out.println("oui");
+			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_pnj.get(2).m_x, m_pnj.get(2).m_y, TILE_SIZE)) {
+			System.out.println("non");
+			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		}
+	}
 	
 }
