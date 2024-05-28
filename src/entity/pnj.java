@@ -70,6 +70,7 @@ public class pnj extends Entity{
 		tab_pnj.add(new pnj(a_gp, 500,2214)); //toilette fille gauche
 		tab_pnj.add(new pnj(a_gp, 2500, 2214)); //toilette garçon droite
 		tab_pnj.add(new pnj(a_gp, 2200, 2050)); //machine à café
+		tab_pnj.add(new pnj(a_gp, 2400, 450)); //bureau julien gavard
 	}
 	
 }

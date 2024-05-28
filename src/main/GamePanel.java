@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
+import entity.pnj_mobile;
 import entity.coins;
 import entity.Craie;
 import tile.TileManager;
@@ -42,16 +43,18 @@ public class GamePanel extends JPanel implements Runnable{
 	// Cr�ation des diff�rentes instances (Player, KeyHandler, TileManager, GameThread ...)
 	KeyHandler m_keyH;
 	Thread m_gameThread;
-	Player m_player;
+	public Player m_player;
 	List<pnj> m_tab_pnj = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
 	List<Craie> m_craies;
 	Craie m_craie;
 	List<Object> inventaire;
 	List<pnj> m_pnj = new ArrayList<>();
+	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
 	List<coins> m_coins = new ArrayList<>();
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
+	boolean m_quete1;
 	
 	String currentMonth = "Septembre";
 	
@@ -59,6 +62,7 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Constructeur
 	 */
 	public GamePanel() {
+		m_quete1 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
@@ -72,7 +76,9 @@ public class GamePanel extends JPanel implements Runnable{
 		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
 		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
 		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
+		m_pnj.add(new pnj(this, 2400, 450)); //bureau julien gavard
 		m_tileM = new TileManager(this);
+		m_pnj_mobile.add(new pnj_mobile(this, 2250, 1800, 2250, 1400));
 		
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
 		
@@ -250,6 +256,11 @@ public class GamePanel extends JPanel implements Runnable{
 		for (coins coin:m_tab_coins) {
 			coin.draw(g2);
 		}
+		for (pnj_mobile p : m_pnj_mobile) {
+            p.update();
+            p.draw(g2);
+        }
+		
 		
 		collectCraie();
 		g2.dispose();
@@ -279,20 +290,23 @@ public class GamePanel extends JPanel implements Runnable{
         m_craies.removeAll(collectedCraies);
     }
 	
-	public void DialoguePNJ(Graphics2D g2) {
+	public void DialoguePNJ(Graphics2D g2 ) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
 		if (m_player.checkCollision(m_pnj.get(0).m_x, m_pnj.get(0).m_y, TILE_SIZE)) {
-			boolean var = true;
-			if (var) {
+			
+			if (m_quete1) {
 				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
 			}
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				entity.Player.AddCoins(100);
-				var = false;
-				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+				m_player.updateScore(100);
+				m_player.updatePourcentageEnergy(20);
+				m_quete1 = false;
 			}
 			
 		}
@@ -301,6 +315,18 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		if (m_player.checkCollision(m_pnj.get(2).m_x, m_pnj.get(2).m_y, TILE_SIZE)) {
 			g2.drawString("Dialogue pnj 3", m_player.m_x, m_player.m_y - 10);
+		}
+		
+		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
+			m_pnj_mobile.get(0).pause = false;
+			g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+		}else {
+			m_pnj_mobile.get(0).pause = true;
+		}
+		
+		
+		if (m_player.checkCollision(m_pnj.get(6).m_x, m_pnj.get(6).m_y, TILE_SIZE)) {
+			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
 		}
 	}
 	

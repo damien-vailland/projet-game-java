@@ -15,7 +15,7 @@ public class Craie extends Entity{
 	
 	public Craie(GamePanel a_gp,int x,int y) {
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/tiles/craie.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/object/craie.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

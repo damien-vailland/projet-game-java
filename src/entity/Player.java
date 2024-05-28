@@ -108,6 +108,10 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void updateScore(int x) {
+			score += x;
+	}
+	
 	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
