@@ -60,13 +60,19 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public GamePanel() {
 		m_FPS = 60;				
-		m_keyH = new KeyHandler();
+		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		inventaire = new ArrayList<>();
 		m_tab_craies = new ArrayList<>();
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
+		 
+		// initialisation: 
+		
+		
+		
+		
 		
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
@@ -83,6 +89,9 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Lancement du thread principal
 	 */
+	public int gameState=1;
+	public final int playState =1; 
+	public final int pauseState=2; 
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
@@ -126,6 +135,7 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
+		if (gameState==playState) {
 		m_player.update(m_tileM.isWall(640, 380),
 						m_tileM.isWall(670, 380),
 						m_tileM.isWall(650,375),
@@ -136,6 +146,10 @@ public class GamePanel extends JPanel implements Runnable{
 		collectCoins();
 		m_tileM.coffeeUpdate();
 	}
+		else if (gameState==pauseState) {
+			//jeu arrêté
+		}
+		}
 	
 	/**
 	 * Affichage des �l�ments
@@ -236,6 +250,17 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
+    public void drawPauseScreen( Graphics2D g2) {
+    	String m_text="GAME PAUSED"; 
+    	int length=(int)g2.getFontMetrics().getStringBounds(m_text, g2).getWidth(); 
+    	int x=450;
+    	int y=400;
+    	g2.setColor(Color.red);
+    	g2.setFont(new Font("Arial", Font.BOLD, 50));
+    	g2.drawString(m_text, x, y);
+    	
+    }
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -256,6 +281,9 @@ public class GamePanel extends JPanel implements Runnable{
 				coin.draw(g2);
 			}
 		}
+		if (gameState==pauseState) {
+			drawPauseScreen( g2);
+		}
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
@@ -267,7 +295,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		collectCraie();
 		g2.dispose();
-		
 	}
 	
 	public void collectCoins() {
