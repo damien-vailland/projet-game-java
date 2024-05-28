@@ -67,6 +67,7 @@ public class coins extends Entity{
 		// r�cup�re l'image du joueur
 		BufferedImage l_image = m_idleImage;
 		int screenX = m_x + m_gp.scrollOffsetX;
-	    int screenY = m_y + m_gp.scrollOffsetY;a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+	    int screenY = m_y + m_gp.scrollOffsetY;
+	    a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 }
