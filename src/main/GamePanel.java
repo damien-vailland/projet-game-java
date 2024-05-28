@@ -127,7 +127,7 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void drawCurrentMonth(Graphics2D g2, String currentMonth) {
-	    int x = SCREEN_WIDTH - 100; // Position X pour le mois (à droite)
+	    int x = 650; // Position X pour le mois (à droite)
 	    int y = 25; // Position Y pour le mois
 	    g2.setColor(Color.WHITE);
 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
