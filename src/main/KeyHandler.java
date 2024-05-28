@@ -17,6 +17,7 @@ public class KeyHandler implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// r�cup�re le code du boutton appuy�
 		int code = e.getKeyCode();
+		System.out.println(code);
 		if(code==37) {
 			entity.Player.gauche=true;
 		}
