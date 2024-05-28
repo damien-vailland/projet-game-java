@@ -6,11 +6,14 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.pnj;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -38,6 +41,7 @@ public class GamePanel extends JPanel implements Runnable{
 	KeyHandler m_keyH;
 	Thread m_gameThread;
 	Player m_player;
+	List<pnj> m_pnj;
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -49,6 +53,13 @@ public class GamePanel extends JPanel implements Runnable{
 		m_FPS = 60;				
 		m_keyH = new KeyHandler();
 		m_player = new Player(this, m_keyH);
+		m_pnj = new ArrayList<>();
+		m_pnj.add(new pnj(this, 700,350));//salle de classe
+		m_pnj.add(new pnj(this, 1650, 1250));//bureau
+		m_pnj.add(new pnj(this, 2900, 1050));//amphi M
+		m_pnj.add(new pnj(this, 500,2214)); //toilette fille gauche
+		m_pnj.add(new pnj(this, 2500, 2214)); //toilette garçon droite
+		m_pnj.add(new pnj(this, 2200, 2050)); //machine à café
 		m_tileM = new TileManager(this);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -210,6 +221,9 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
+		for (pnj pnj:m_pnj) {
+			pnj.draw(g2);
+		}
 		g2.dispose();
 	}
 	
