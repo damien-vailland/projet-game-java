@@ -8,8 +8,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
-import main.KeyHandler;
-import object.coins;
 
 /**
  * D�fintition du comportement d'un joueur

@@ -7,8 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
-import object.coins;
-import object.toilet;
+import entity.coins;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -46,7 +45,6 @@ public class GamePanel extends JPanel implements Runnable{
 	Player m_player;
 	List<pnj> m_tab_pnj = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
-	List<toilet> m_tab_toilet;
 	TileManager m_tileM;
 	
 	String currentMonth = "Septembre";
@@ -62,8 +60,8 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj);
 		
-		object.coins.create_tab_coordonnees();
-		object.coins.add_Coins_to_panel(this,m_tab_coins);
+		entity.coins.create_tab_coordonnees();
+		entity.coins.add_Coins_to_panel(this,m_tab_coins);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -199,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
             m_player.updatePourcentageEnergy(-5);
-    		object.coins.add_Coins_to_panel(this,m_tab_coins);
+            entity.coins.add_Coins_to_panel(this,m_tab_coins);
         }
     }
 	
@@ -243,7 +241,7 @@ public class GamePanel extends JPanel implements Runnable{
 	        if (m_player.checkCollision(coin.m_x, coin.m_y, TILE_SIZE)) {
 	            collectedCoins.add(coin);
 	            entity.Player.AddCoins(100);
-	            object.coins.nb_coins-=1;
+	            entity.coins.nb_coins-=1;
 	        }
 	    }
 	    m_tab_coins.removeAll(collectedCoins);
