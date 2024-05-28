@@ -49,6 +49,7 @@ public class KeyHandler implements KeyListener{
 		if(code==69) {
 			tile.TileManager.m_use=true;
 			entity.add_teachers.nouveau_prof=true;
+			entity.add_students.nouvel_eleve=true;
 		}
 	}
 

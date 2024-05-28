@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import entity.Player;
 import entity.add_teachers;
+import entity.add_students;
 import entity.pnj;
 import entity.coins;
 import entity.Craie;
@@ -52,8 +53,10 @@ public class GamePanel extends JPanel implements Runnable{
 	List<Object> inventaire;
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
-	add_teachers m_facture_prof;
+	add_teachers m_add_prof;
+	add_students m_add_eleve;
 	public static int m_nb_teacher=0;
+	public static int m_nb_student=0;
 	
 	String currentMonth = "Septembre";
 	
@@ -75,7 +78,8 @@ public class GamePanel extends JPanel implements Runnable{
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
 		
-		m_facture_prof = new add_teachers(this,1150, 1550);
+		m_add_prof = new add_teachers(this,1150, 1550);
+		m_add_eleve = new add_students(this,1150, 1850);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -143,6 +147,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
 		entity.add_teachers.ajout_prof();
+		entity.add_students.ajout_eleve();
 	}
 		else if (gameState==pauseState) {
 			//jeu arrêté
@@ -259,6 +264,7 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCoin(g2);
 		DialoguePNJ(g2);
 		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+		g2.drawString("Élève : "+m_nb_student, 0, 125);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -267,7 +273,8 @@ public class GamePanel extends JPanel implements Runnable{
 			for (coins coin:m_tab_coins) {
 				coin.draw(g2);
 			}
-			m_facture_prof.draw(g2);
+			m_add_prof.draw(g2);
+			m_add_eleve.draw(g2);
 		}
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
@@ -336,9 +343,13 @@ public class GamePanel extends JPanel implements Runnable{
 			g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas ? \n Pour ouvrir le local", m_player.m_x, m_player.m_y - 10);
 		}
 		
-		if (m_player.checkCollision(m_facture_prof.m_x, m_facture_prof.m_y, TILE_SIZE)) {
+		if (m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE)) {
 			g2.drawString("Appuyez sur E pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
-			g2.drawString("300€ puis 10€/mois", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+			g2.drawString("-300€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		if (m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouvel élève !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("+50€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
 		}
 	}
 
