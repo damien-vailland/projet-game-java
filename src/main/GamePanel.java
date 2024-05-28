@@ -8,8 +8,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import entity.pnj;
 import entity.coins;
-import object.Craie;
-import object.coins;
+import entity.Craie;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
@@ -17,7 +16,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -242,13 +240,12 @@ public class GamePanel extends JPanel implements Runnable{
 		drawCoin(g2);
 		DialoguePNJ(g2);
 		for (pnj pnj:m_tab_pnj) {
+			pnj.draw(g2);
+		}
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_craies) {
 				craie.draw(g2);
 		    }
-		}
-		for (pnj pnj:m_pnj) {
-			pnj.draw(g2);
 		}
 		for (coins coin:m_tab_coins) {
 			coin.draw(g2);
@@ -286,15 +283,6 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
-		if (m_player.checkCollision(m_tab_pnj.get(0).m_x, m_tab_pnj.get(0).m_y, TILE_SIZE)) {
-			g2.drawString("Dialogue pnj 1", m_player.m_x, m_player.m_y - 10);
-		}
-		if (m_player.checkCollision(m_tab_pnj.get(1).m_x, m_tab_pnj.get(1).m_y, TILE_SIZE)) {
-			System.out.println("oui");
-			g2.drawString("Dialogue pnj 2", m_player.m_x, m_player.m_y - 10);
-		}
-		if (m_player.checkCollision(m_tab_pnj.get(2).m_x, m_tab_pnj.get(2).m_y, TILE_SIZE)) {
-			System.out.println("non");
 		if (m_player.checkCollision(m_pnj.get(0).m_x, m_pnj.get(0).m_y, TILE_SIZE)) {
 			boolean var = true;
 			if (var) {

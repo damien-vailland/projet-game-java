@@ -1,4 +1,4 @@
-package object;
+package entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -9,13 +9,13 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 
-public class Craie extends Object{
+public class Craie extends Entity{
 
+	public GamePanel m_gp;
 	
 	public Craie(GamePanel a_gp,int x,int y) {
-		m_name = "craie";
 		try {
-			m_Image = ImageIO.read(getClass().getResource("/tiles/craie.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/tiles/craie.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -26,7 +26,7 @@ public class Craie extends Object{
 	
 	public void draw(Graphics2D a_g2) {
 		// r�cup�re l'image du joueur
-		BufferedImage l_image = m_Image;
+		BufferedImage l_image = m_idleImage;
 		int screenX = m_x + m_gp.scrollOffsetX;
 	    int screenY = m_y + m_gp.scrollOffsetY;
 		// affiche le personnage avec l'image "image", avec les coordonn�es x et y, et de taille tileSize (16x16) sans �chelle, et 48x48 avec �chelle)
