@@ -19,6 +19,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -189,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable{
 	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
 	    
 	    g2.setColor(Color.BLACK);
-	    String text = "Energie";
+	    String text = "Satisfaction";
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
 	    int textX = x + (energyBarWidth - metrics.stringWidth(text)) / 2;
 	    int textY = y + ((energyBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
@@ -231,18 +232,19 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
     public void updateCurrentMonth(long startTime, long monthDuration, String[] months) {
-        int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
-        if (currentMonth != months[currentMonthIndex]) {
-        	currentMonth = months[currentMonthIndex];
-        	int x=-5;
-        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
-        	if(m_tileM.breakCoffee()) {
-        		x*=2;
-        	}
-            m_player.updatePourcentageEnergy(x);
-            entity.coins.add_Coins_to_panel(this,m_tab_coins);
-			entity.Player.AddCoins(entity.Player.salaire);
-        }
+    	long temp = System.currentTimeMillis();
+        	int currentMonthIndex = (int) ((temp - startTime) / monthDuration);
+            if (currentMonth != months[currentMonthIndex]) {
+            	currentMonth = months[currentMonthIndex];
+            	int x=-5;
+            	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+            	if(m_tileM.breakCoffee()) {
+            		x*=2;
+            	}
+                m_player.updatePourcentageEnergy(x);
+                entity.coins.add_Coins_to_panel(this,m_tab_coins);
+    			entity.Player.AddCoins(entity.Player.salaire);
+            }
     }
 	
     public void drawScore(Graphics2D g2) {
