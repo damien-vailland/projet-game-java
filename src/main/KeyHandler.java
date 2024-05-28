@@ -35,6 +35,7 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 
+	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();

@@ -17,8 +17,12 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
+
 	public int m_boxG,m_boxD,m_boxH,m_boxB;
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
+	int pourcentage_energy;
+	int score;
+	int coin;
 	
 	/**
 	 * Constructeur de Player
@@ -28,6 +32,9 @@ public class Player extends Entity{
 	public Player(GamePanel a_gp, KeyHandler a_keyH) {
 		this.m_gp = a_gp;
 		this.m_keyH = a_keyH;
+		this.pourcentage_energy = 50;
+		this.score = 0;
+		this.coin=40;
 		this.setDefaultValues();
 		this.getPlayerImage();
 	}
@@ -59,6 +66,18 @@ public class Player extends Entity{
 		}
 	}
 	
+	public int getPourcentageEnergy() {
+	    return pourcentage_energy;
+	}
+	
+	public int getCoin() {
+		return coin;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
 	/**
 	 * Mise � jour des donn�es du joueur
 	 */
@@ -78,6 +97,16 @@ public class Player extends Entity{
 	}
 	
 	
+	public void updatePourcentageEnergy(int x) {
+		if (pourcentage_energy + x < 100) {
+			pourcentage_energy += x;
+		}
+		else {
+			pourcentage_energy = 100;
+		}
+	}
+	
+	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
 	 * @param a_g2 Graphics2D 
@@ -89,5 +118,19 @@ public class Player extends Entity{
 		a_g2.drawImage(l_image, m_x, m_y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
+	public boolean checkCollision(int coinX, int coinY, int coinSize) {
+	    int playerLeft = m_x;
+	    int playerRight = m_x + m_gp.TILE_SIZE;
+	    int playerTop = m_y;
+	    int playerBottom = m_y + m_gp.TILE_SIZE;
+
+	    int coinLeft = coinX + m_gp.scrollOffsetX;
+	    int coinRight = coinX + m_gp.scrollOffsetX + coinSize;
+	    int coinTop = coinY + m_gp.scrollOffsetY;
+	    int coinBottom = coinY + m_gp.scrollOffsetY + coinSize;
+
+	    return !(playerLeft >= coinRight || playerRight <= coinLeft || playerTop >= coinBottom || playerBottom <= coinTop);
+	}
+
 	
 }
