@@ -41,9 +41,15 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public GamePanel() {
 		m_FPS = 60;				
-		m_keyH = new KeyHandler();
+		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		m_tileM = new TileManager(this);
+		 
+		// initialisation: 
+		
+		
+		
+		
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -55,6 +61,9 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Lancement du thread principal
 	 */
+	public int gameState=1;
+	public final int playState =1; 
+	public final int pauseState=2; 
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
@@ -98,12 +107,17 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Mise � jour des donn�es des entit�s
 	 */
 	public void update() {
+		if (gameState==playState) {
 		m_player.update(m_tileM.isWall(640, 380),
 						m_tileM.isWall(670, 380),
 						m_tileM.isWall(650,375),
 						m_tileM.isWall(650,400))
 		;
 	}
+		else if (gameState==pauseState) {
+			//jeu arrêté
+		}
+		}
 	
 	/**
 	 * Affichage des �l�ments
