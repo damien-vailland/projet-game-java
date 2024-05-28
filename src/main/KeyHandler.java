@@ -45,8 +45,12 @@ public class KeyHandler implements KeyListener{
 		if(code==40) {
 			entity.Player.bas=true;
 		}
+		if(code==69) {
+			tile.TileManager.m_use=true;
+		}
 	}
 
+	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
