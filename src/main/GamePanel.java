@@ -141,7 +141,10 @@ public class GamePanel extends JPanel implements Runnable{
 	
     public void updateCurrentMonth(long startTime, long monthDuration, String[] months) {
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
-        currentMonth = months[currentMonthIndex];
+        if (currentMonth != months[currentMonthIndex]) {
+        	currentMonth = months[currentMonthIndex];
+            m_player.updatePourcentageEnergy(-5);
+        }
     }
 	
     public void drawScore(Graphics2D g2) {

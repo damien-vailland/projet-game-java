@@ -90,6 +90,16 @@ public class Player extends Entity{
 	}
 	
 	
+	public void updatePourcentageEnergy(int x) {
+		if (pourcentage_energy + x < 100) {
+			pourcentage_energy += x;
+		}
+		else {
+			pourcentage_energy = 100;
+		}
+	}
+	
+	
 	/**
 	 * Affichage du l'image du joueur dans la fen�tre du jeu
 	 * @param a_g2 Graphics2D 
