@@ -55,7 +55,7 @@ public class pnj_mobile extends Entity {
     	}
     }
 
-     public void moveTowards(int targetX, int targetY) {
+     void moveTowards(int targetX, int targetY) {
         if (m_x < targetX) {
             m_x += m_speed;
             if (m_x > targetX) m_x = targetX;
