@@ -21,6 +21,7 @@ public class TileManager {
 	int m_maxTiles = 30;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
 	public static boolean m_use=false;
+	public static boolean m_act=false;
 	public int m_mapChoose = 1;
 	/**
 	 * Constructeur
@@ -102,6 +103,11 @@ public class TileManager {
 			m_tile[4] = new Tile(false);
 			m_tile[4].m_image = ImageIO.read(getClass().getResource("/tiles/floor.png"));
 			
+			m_tile[2] = new Tile(true);
+			m_tile[2].m_image = ImageIO.read(getClass().getResource("/tiles/coffee-1.png"));
+			
+			m_tile[23] = new Tile(true);
+			m_tile[23].m_image = ImageIO.read(getClass().getResource("/tiles/coffee-2.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -129,8 +135,39 @@ public class TileManager {
 		}
 	}
 	
+	public void coffeeUpdate() {
+		//La machine à café casse à partir de octobre
+		if(m_gp.currentMonth!="Septembre" && !m_gp.reparationPossible() && m_gp.machineReparee==false) {
+			m_mapTileNum[46][44]=23;
+		} else {
+			m_mapTileNum[46][44]=2;
+		}
+	}
+	
+	//Tester si la machine à café est cassée
+	public boolean breakCoffee(){
+		return m_mapTileNum[46][44]==23;
+	}
+	
+	//Tester si le personnage est devant la machine à café cassée
+	public boolean behindBreakCoffee(){
+			//Points autour du personnage pour détecter les trucs
+			int tileX = (-m_gp.scrollOffsetX + 650) / m_gp.TILE_SIZE ;
+			int tileY = (-m_gp.scrollOffsetY + 400 ) / m_gp.TILE_SIZE;
+			return(m_mapTileNum[tileX][tileY] == 23);		
+	}
+	
+	//Tester si le personnage appuie sur a pour réparer la machine à café
+	public boolean reparationCoffee() {
+		if(behindBreakCoffee()) {
+			return(m_act);
+		}
+		return false;
+	}
+	
 	public void doorUpdate() {
 		if(m_use) {
+			//Points autour du personnage pour détecter les trucs
 			int tileX = (-m_gp.scrollOffsetX + 640) / m_gp.TILE_SIZE ;
 			int tileY = (-m_gp.scrollOffsetY + 380 ) / m_gp.TILE_SIZE;
 			

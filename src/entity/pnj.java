@@ -44,7 +44,7 @@ public class pnj extends Entity{
 	public void getPlayerImage() {
 		//gestion des expections 
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/tiles/pnj.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

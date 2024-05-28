@@ -38,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
 	public int scrollOffsetY = -500;
+	public boolean machineReparee = false;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -63,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable{
 	boolean m_quete2;
 	public static int m_nb_student=0;
 	
-	String currentMonth = "Septembre";
+	public String currentMonth = "Septembre";
 	
 	/**
 	 * Constructeur
@@ -156,6 +157,7 @@ public class GamePanel extends JPanel implements Runnable{
 		collectCoins();
 		entity.add_teachers.ajout_prof();
 		entity.add_students.ajout_eleve();
+		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
 			//jeu arrêté
@@ -232,7 +234,12 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-            m_player.updatePourcentageEnergy(-5);
+        	int x=-5;
+        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+        	if(m_tileM.breakCoffee()) {
+        		x*=2;
+        	}
+            m_player.updatePourcentageEnergy(x);
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
 			entity.Player.AddCoins(entity.Player.salaire);
         }
@@ -246,6 +253,13 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
     
+    public void CoffeeMessage(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        if(m_tileM.behindBreakCoffee()) {
+    		g2.drawString("Appuyer sur a pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
+        }
+    }
 
 	/**
 	 * Affichage des �l�ments
@@ -273,6 +287,7 @@ public class GamePanel extends JPanel implements Runnable{
 		DialoguePNJ(g2);
 		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
 		g2.drawString("Élève : "+m_nb_student, 0, 125);
+		CoffeeMessage(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -303,7 +318,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		collectCraie();
 		g2.dispose();
-		
 	}
 	
 	public void collectCoins() {
@@ -329,7 +343,24 @@ public class GamePanel extends JPanel implements Runnable{
         m_tab_craies.removeAll(collectedCraies);
     }
 	
-	public void DialoguePNJ(Graphics2D g2 ) {
+	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
+	public boolean reparationPossible(/*Graphics2D g2*/) {
+		if(m_tileM.reparationCoffee()) {
+			if(m_player.m_coins<100) {
+//				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
+				return false;
+			} else {
+//				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
+				m_player.m_coins-=100;
+				machineReparee=true;
+				m_player.updatePourcentageEnergy(10);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
