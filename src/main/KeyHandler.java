@@ -51,6 +51,9 @@ public class KeyHandler implements KeyListener{
 			entity.add_teachers.nouveau_prof=true;
 			entity.add_students.nouvel_eleve=true;
 		}
+		if(code==65) {
+			tile.TileManager.m_act=true;
+		}
 	}
 
 	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache

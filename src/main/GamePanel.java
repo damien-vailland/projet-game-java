@@ -9,6 +9,7 @@ import entity.Player;
 import entity.add_teachers;
 import entity.add_students;
 import entity.pnj;
+import entity.pnj_mobile;
 import entity.coins;
 import entity.Craie;
 import tile.TileManager;
@@ -37,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
 	public int scrollOffsetY = -500;
+	public boolean machineReparee = false;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -51,21 +53,28 @@ public class GamePanel extends JPanel implements Runnable{
 	List<Craie> m_tab_craies;
 	Craie m_craie;
 	List<Object> inventaire;
+
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
 	add_teachers m_add_prof;
 	add_students m_add_eleve;
+
 	public static int m_nb_teacher=1;
 	public static int m_nb_student=1;
 	
 	float coeff_satisfaction=1;
+	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
+	boolean m_quete1;
+	boolean m_quete2;
 	
-	String currentMonth = "Septembre";
+	public String currentMonth = "Septembre";
 	
 	/**
 	 * Constructeur
 	 */
 	public GamePanel() {
+		m_quete1 = true;
+		m_quete2 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
@@ -74,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable{
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
 		m_tileM = new TileManager(this);
+		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
 
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
@@ -154,6 +164,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (add_students.nouvel_eleve && check_add_eleve()) {
             add_students.ajout_eleve();
         }
+		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
 			//jeu arrêté
@@ -232,6 +243,11 @@ public class GamePanel extends JPanel implements Runnable{
         	currentMonth = months[currentMonthIndex];
         	coeff_satisfaction=m_nb_teacher/m_nb_student;
             m_player.updatePourcentageSatisfaction(coeff_satisfaction);
+			int x=-5;
+        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+        	if(m_tileM.breakCoffee()) {
+        		x*=2;
+        	}
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
 			entity.Player.AddCoins(entity.Player.salaire);
         }
@@ -245,6 +261,13 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
     
+    public void CoffeeMessage(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        if(m_tileM.behindBreakCoffee()) {
+    		g2.drawString("Appuyer sur a pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
+        }
+    }
 
 	/**
 	 * Affichage des �l�ments
@@ -272,6 +295,7 @@ public class GamePanel extends JPanel implements Runnable{
 		DialoguePNJ(g2);
 		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
 		g2.drawString("Élève : "+m_nb_student, 0, 125);
+		CoffeeMessage(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -294,6 +318,11 @@ public class GamePanel extends JPanel implements Runnable{
 				pnj.draw(g2);
 			}
 		}
+		for (pnj_mobile p : m_pnj_mobile) {
+            p.update();
+            p.draw(g2);
+        }
+		
 		
 		collectCraie();
 		g2.dispose();
@@ -322,20 +351,41 @@ public class GamePanel extends JPanel implements Runnable{
         m_tab_craies.removeAll(collectedCraies);
     }
 	
+	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
+	public boolean reparationPossible(/*Graphics2D g2*/) {
+		if(m_tileM.reparationCoffee()) {
+			if(m_player.m_coins<100) {
+//				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
+				return false;
+			} else {
+//				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
+				m_player.m_coins-=100;
+				machineReparee=true;
+				m_player.updatePourcentageEnergy(10);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
+
 		if (m_player.checkCollision(m_tab_pnj_1.get(0).m_x, m_tab_pnj_1.get(0).m_y, TILE_SIZE)) {
-			boolean var = true;
-			if (var) {
-				g2.drawString("Tu peux aller me chercher une craie dans la salle 103 ?", m_player.m_x, m_player.m_y - 10);
+			
+			if (m_quete1) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+
 			}
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
-				entity.Player.AddCoins(100);
-				var = false;
-				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+				m_player.updateScore(100);
+				m_player.updatePourcentageEnergy(20);
+				m_quete1 = false;
 			}
 			
 		}
@@ -357,6 +407,27 @@ public class GamePanel extends JPanel implements Runnable{
 		if (m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE)) {
 			g2.drawString("Appuyez sur E pour ajouter un nouvel élève !", m_player.m_x, m_player.m_y - 20);
 			g2.drawString("+50€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		
+		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
+			m_pnj_mobile.get(0).pause = false;
+			if(m_quete2) {
+				g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+			}
+			if (m_tileM.m_use) {
+				m_quete2 = false;
+				m_player.updateScore(100);
+				m_player.updatePourcentageEnergy(20);
+			}
+		}else {
+			m_pnj_mobile.get(0).pause = true;
+		}
+		
+		
+		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
+			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
 		}
 	}
 

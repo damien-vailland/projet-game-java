@@ -21,8 +21,8 @@ public class Player extends Entity{
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	static float pourcentage_energy;
 	int score;
-	static int m_coins=40;
 	public static int salaire=0;
+	public static int m_coins=40;
 	
     private BufferedImage[][] m_idleImages = new BufferedImage[4][4];
 	int m_indice = 0;
@@ -144,6 +144,10 @@ public class Player extends Entity{
 		else {
 			pourcentage_energy = 100;
 		}
+	}
+	
+	public void updateScore(int x) {
+			score += x;
 	}
 	
 	
