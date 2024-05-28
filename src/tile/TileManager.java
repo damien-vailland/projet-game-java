@@ -18,7 +18,7 @@ import main.GamePanel;
 public class TileManager {
 	GamePanel m_gp;			//panel du jeu principal
 	Tile[] m_tile;			//tableau de toutes les tiles possibles dans le jeu
-	int m_maxTiles = 25;	//nombre maximum de tiles chargeable dans le jeu
+	int m_maxTiles = 30;	//nombre maximum de tiles chargeable dans le jeu
 	int m_mapTileNum[][];	//r�partition des tiles dans la carte du jeu
 	public static boolean m_use=false;
 	public int m_mapChoose = 1;
@@ -78,14 +78,14 @@ public class TileManager {
 			m_tile[3] = new Tile(true);
 			m_tile[3].m_image = ImageIO.read(getClass().getResource("/tiles/door_h.png"));
 
-			m_tile[5] = new Tile(true);
-			m_tile[5].m_image = ImageIO.read(getClass().getResource("/tiles/door_v.png"));
+			m_tile[25] = new Tile(true);
+			m_tile[25].m_image = ImageIO.read(getClass().getResource("/tiles/door_v.png"));
 			
-			m_tile[8] = new Tile(false);
-			m_tile[8].m_image = ImageIO.read(getClass().getResource("/tiles/door_h_opened.png"));
+			m_tile[28] = new Tile(false);
+			m_tile[28].m_image = ImageIO.read(getClass().getResource("/tiles/door_h_opened.png"));
 			
-			m_tile[9] = new Tile(false);
-			m_tile[9].m_image = ImageIO.read(getClass().getResource("/tiles/door_v_opened.png"));
+			m_tile[29] = new Tile(false);
+			m_tile[29].m_image = ImageIO.read(getClass().getResource("/tiles/door_v_opened.png"));
 
 			m_tile[6] = new Tile(false);
 			m_tile[6].m_image = ImageIO.read(getClass().getResource("/tiles/stairs_1.png"));
@@ -118,7 +118,7 @@ public class TileManager {
 		int tileX = (-m_gp.scrollOffsetX + x) / m_gp.TILE_SIZE ;
 		int tileY = (-m_gp.scrollOffsetY + y ) / m_gp.TILE_SIZE;
 		
-		if(m_mapTileNum[tileX][tileY] == 6 || m_mapTileNum[tileX][tileY] == 7) {
+		if(m_mapTileNum[tileX][tileY] == 6 || m_mapTileNum[tileX][tileY] == 18) {
 			if(m_mapChoose==1) {
 				m_mapChoose=2;
 				this.loadMap("/maps/map2.txt");
@@ -136,14 +136,14 @@ public class TileManager {
 			
 			if(m_mapTileNum[tileX][tileY] == 3) {
 				if(m_mapTileNum[tileX - 1][tileY] == 1) {
-					m_mapTileNum[tileX][tileY]=8;
+					m_mapTileNum[tileX][tileY]=28;
 				} else {
-					m_mapTileNum[tileX][tileY]=9;
+					m_mapTileNum[tileX][tileY]=29;
 				}
 				m_use=false;
 			}
 			
-			else if(m_mapTileNum[tileX][tileY] == 8 || m_mapTileNum[tileX][tileY] == 9) {
+			else if(m_mapTileNum[tileX][tileY] == 28 || m_mapTileNum[tileX][tileY] == 29) {
 				m_mapTileNum[tileX][tileY]=3;
 				m_use=false;
 			}
@@ -151,13 +151,13 @@ public class TileManager {
 			tileX = (-m_gp.scrollOffsetX + 670) / m_gp.TILE_SIZE ;
 			if(m_mapTileNum[tileX][tileY] == 3) {
 				if(m_mapTileNum[tileX - 1][tileY] == 1) {
-					m_mapTileNum[tileX][tileY]=8;
+					m_mapTileNum[tileX][tileY]=28;
 				} else {
-					m_mapTileNum[tileX][tileY]=9;
+					m_mapTileNum[tileX][tileY]=29;
 					}
 				m_use=false;
 			}
-			else if(m_mapTileNum[tileX][tileY] == 8 || m_mapTileNum[tileX][tileY] == 9) {
+			else if(m_mapTileNum[tileX][tileY] == 28 || m_mapTileNum[tileX][tileY] == 29) {
 				m_mapTileNum[tileX][tileY]=3;
 				m_use=false;
 			}
@@ -166,13 +166,13 @@ public class TileManager {
 			tileY = (-m_gp.scrollOffsetY + 375 ) / m_gp.TILE_SIZE;
 			if(m_mapTileNum[tileX][tileY] == 3) {
 				if(m_mapTileNum[tileX - 1][tileY] == 1) {
-					m_mapTileNum[tileX][tileY]=8;
+					m_mapTileNum[tileX][tileY]=28;
 				} else {
-					m_mapTileNum[tileX][tileY]=9;
+					m_mapTileNum[tileX][tileY]=29;
 				}
 				m_use=false;
 			}
-			else if(m_mapTileNum[tileX][tileY] == 8 || m_mapTileNum[tileX][tileY] == 9) {
+			else if(m_mapTileNum[tileX][tileY] == 28 || m_mapTileNum[tileX][tileY] == 29) {
 				m_mapTileNum[tileX][tileY]=3;
 				m_use=false;
 			}
@@ -180,13 +180,13 @@ public class TileManager {
 			tileY = (-m_gp.scrollOffsetY + 400 ) / m_gp.TILE_SIZE;
 			if(m_mapTileNum[tileX][tileY] == 3) {
 				if(m_mapTileNum[tileX - 1][tileY] == 1) {
-					m_mapTileNum[tileX][tileY]=8;
+					m_mapTileNum[tileX][tileY]=28;
 				} else {
-					m_mapTileNum[tileX][tileY]=9;
+					m_mapTileNum[tileX][tileY]=29;
 				}
 				m_use=false;
 			}
-			else if(m_mapTileNum[tileX][tileY] == 8 || m_mapTileNum[tileX][tileY] == 9) {
+			else if(m_mapTileNum[tileX][tileY] == 28 || m_mapTileNum[tileX][tileY] == 29) {
 				m_mapTileNum[tileX][tileY]=3;
 				m_use=false;
 			}
@@ -242,15 +242,15 @@ public class TileManager {
 				int tileNum = m_mapTileNum[col][row];
 				if(tileNum == 1) {
 					if(row < m_gp.MAX_SCREEN_ROW-1 && col < m_gp.MAX_SCREEN_COL-1) {
-						if((m_mapTileNum[col][row - 1] == 1 || m_mapTileNum[col][row - 1] == 3 || m_mapTileNum[col][row - 1] == 9)
-						&& (m_mapTileNum[col][row + 1] == 1 || m_mapTileNum[col][row + 1] == 3 || m_mapTileNum[col][row + 1] == 9)
+						if((m_mapTileNum[col][row - 1] == 1 || m_mapTileNum[col][row - 1] == 3 || m_mapTileNum[col][row - 1] == 29)
+						&& (m_mapTileNum[col][row + 1] == 1 || m_mapTileNum[col][row + 1] == 3 || m_mapTileNum[col][row + 1] == 29)
 						&& m_mapTileNum[col - 1][row] != 1
 						&& m_mapTileNum[col + 1][row] != 1) {
 							tileNum = 11;
 						}
 
-						if((m_mapTileNum[col][row - 1] == 1 || m_mapTileNum[col][row - 1] == 3 || m_mapTileNum[col][row - 1] == 9)
-						&& (m_mapTileNum[col][row + 1] != 1 && m_mapTileNum[col][row + 1] != 3 && m_mapTileNum[col][row + 1] != 9)
+						if((m_mapTileNum[col][row - 1] == 1 || m_mapTileNum[col][row - 1] == 3 || m_mapTileNum[col][row - 1] == 29)
+						&& (m_mapTileNum[col][row + 1] != 1 && m_mapTileNum[col][row + 1] != 3 && m_mapTileNum[col][row + 1] != 29)
 						&& m_mapTileNum[col - 1][row] != 1
 						&& m_mapTileNum[col + 1][row] != 1) {
 							tileNum = 12;
@@ -304,7 +304,7 @@ public class TileManager {
 						&& m_mapTileNum[col][row + 1] != 1
 						&& m_mapTileNum[col - 1][row] == 1
 						&& m_mapTileNum[col + 1][row] != 1
-						&& m_mapTileNum[col + 1][row] != 3 && m_mapTileNum[col + 1][row] != 8 ) {
+						&& m_mapTileNum[col + 1][row] != 3 && m_mapTileNum[col + 1][row] != 28 ) {
 							tileNum = 21;
 						}	
 					}
@@ -315,7 +315,7 @@ public class TileManager {
 							&& m_mapTileNum[col][row + 1] == 1
 							&& m_mapTileNum[col - 1][row] != 1
 							&& m_mapTileNum[col + 1][row] != 1) {
-								tileNum = 5;
+								tileNum = 25;
 							}	
 					}
 				}
