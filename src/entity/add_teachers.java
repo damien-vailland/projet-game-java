@@ -16,7 +16,7 @@ public class add_teachers extends Entity{
 	
 	public add_teachers(GamePanel a_gp,int x,int y) {
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/object/facture.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/object/satisfaction.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
