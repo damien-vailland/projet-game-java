@@ -19,7 +19,7 @@ public class add_students extends Entity{
 	
 	public add_students(GamePanel a_gp,int x,int y) {
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/object/satisfaction.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/object/facture.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -44,5 +44,6 @@ public class add_students extends Entity{
 		main.GamePanel.m_nb_student+=1;
 		nouvel_eleve=false;
 		entity.Player.updateScore(100);
+		
 	}
 }

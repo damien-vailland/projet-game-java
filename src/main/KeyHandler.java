@@ -26,6 +26,29 @@ public class KeyHandler implements KeyListener{
 		// r�cup�re le code du boutton appuy�
 		
 		int code = e.getKeyCode();
+		// condition sur commandeNum; 
+		if (m_gp.gameState==m_gp.titleState) {
+			if (code==38) {
+				m_gp.commandeNum=0; 
+			}
+			if (code ==40) {
+				m_gp.commandeNum=1; 
+			}
+			if (code==KeyEvent.VK_ENTER) {
+				if(m_gp.commandeNum==0) {
+					m_gp.gameState=m_gp.playState; 
+					
+				}
+				if(m_gp.commandeNum==1) {
+					System.exit(0);
+				}
+				
+				
+			}
+			
+		}
+		//Condition sur la touche pause P
+		
 		if (code==80) {
 			if (m_gp.gameState==m_gp.playState) {
 				m_gp.gameState=m_gp.pauseState;
@@ -71,6 +94,14 @@ public class KeyHandler implements KeyListener{
 		}
 		if(code==40) {
 			entity.Player.bas=false;
+		}
+		if(code==69) {
+			tile.TileManager.m_use=false;
+			entity.add_teachers.nouveau_prof=false;
+			entity.add_students.nouvel_eleve=false;
+		}
+		if(code==65) {
+			tile.TileManager.m_act=false;
 		}
 	}
 
