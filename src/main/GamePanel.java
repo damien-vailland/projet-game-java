@@ -3,17 +3,21 @@ package main;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Color;
+
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import entity.Player;
 import entity.pnj;
 import entity.coins;
 import entity.Craie;
+import entity.Entity;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,9 +92,11 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Lancement du thread principal
 	 */
-	public int gameState=1;
+	public int gameState;
 	public final int playState =1; 
+	public final int titleState=0; 
 	public final int pauseState=2; 
+	public int commandeNum=0;
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
 		m_gameThread.start();
@@ -231,14 +237,13 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.setFont(new Font("Arial", Font.BOLD, 20));
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
-    
+  
 
 	/**
 	 * Affichage des �l�ments
 	 */
     public void drawPauseScreen( Graphics2D g2) {
     	String m_text="GAME PAUSED"; 
-    	int length=(int)g2.getFontMetrics().getStringBounds(m_text, g2).getWidth(); 
     	int x=450;
     	int y=400;
     	g2.setColor(Color.red);
@@ -246,10 +251,56 @@ public class GamePanel extends JPanel implements Runnable{
     	g2.drawString(m_text, x, y);
     	
     }
+    // dessiner un title 
+	public void drawTitleScreen(Graphics2D g2) {
+		//background
+		g2.setColor(Color.black);
+		g2.fillRect(0,0,this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
+		//Title name
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 130F ));
+		String text ="Gestion ESIR";
+		int x=175; 
+		int y=200; 
+		//shadow
+		g2.setColor(Color.GRAY);
+		g2.drawString(text,  x+5,  y+5);
+		//Main color
+		g2.setColor(Color.white);
+		g2.drawString(text, x, y);
+		// image du directeur: 
+		x=600;
+		y=250; 
+		g2.drawImage(this.m_player.m_idleImage,x,y, this.TILE_SIZE*2, this.TILE_SIZE*2, null);
+		//Menu
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 48F));
+		//NEW GAME: 
+		text="NEW GAME"; 
+		x=500; 
+		y=400; 
+		g2.drawString(text, x, y);
+		if (commandeNum==0) {
+			g2.drawString(">", x-this.TILE_SIZE,y);
+		}
+		
+	
+		
+		text="QUIT"; 
+		x=600; 
+		y=500; 
+		g2.drawString(text, x, y);
+		if (commandeNum==1) {
+			g2.drawString(">", x-this.TILE_SIZE,y);
+		}
+		
+	}
 
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+		if(gameState==titleState) {
+			drawTitleScreen(g2); 
+		}
+	else {
+		super.paintComponent(g);
 		m_tileM.draw(g2);
 		m_player.draw(g2);
 		drawEnergyBar(g2);
@@ -269,7 +320,7 @@ public class GamePanel extends JPanel implements Runnable{
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
 		}
-		}
+		
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
@@ -280,7 +331,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 		collectCraie();
-		g2.dispose();
+		g2.dispose();}
 		
 	}
 	

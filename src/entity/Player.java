@@ -63,6 +63,7 @@ public class Player extends Entity{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public int getPourcentageEnergy() {
