@@ -277,6 +277,15 @@ public class GamePanel extends JPanel implements Runnable{
     		g2.drawString("Appuyer sur a pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
         }
     }
+    
+    //Afficher des messages si des missions n'ont pas été réalisé au bout d'un certain temps
+    public void RappelMission(Graphics2D g2) {
+    	g2.setColor(Color.BLACK);
+    	g2.setFont(new Font("Arial", Font.BOLD, 12));
+        if(m_tileM.breakCoffee() && currentMonth=="Décembre") {
+    		g2.drawString("Il y a un problème au niveau de la machine à café dans le Hall...", 800, 600);
+        }
+    }
 
 	/**
 	 * Affichage des �l�ments
@@ -307,6 +316,7 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
 		g2.drawString("Élève : "+m_nb_student, 0, 125);
 		CoffeeMessage(g2);
+		RappelMission(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -381,12 +391,12 @@ public class GamePanel extends JPanel implements Runnable{
 	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
 	public boolean reparationPossible(/*Graphics2D g2*/) {
 		if(m_tileM.reparationCoffee()) {
-			if(m_player.m_coins<100) {
+			if(Player.m_coins<100) {
 //				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
 				return false;
 			} else {
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
-				m_player.m_coins-=100;
+				Player.m_coins-=100;
 				machineReparee=true;
 				m_player.updatePourcentageSatisfaction(10);
 				return true;
@@ -408,7 +418,7 @@ public class GamePanel extends JPanel implements Runnable{
 				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
 
 			}
-			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
+			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(10);
@@ -461,10 +471,13 @@ public class GamePanel extends JPanel implements Runnable{
 			}else {
 				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
 			}
-			if (m_tileM.m_use) {
+			boolean limite = true ;
+			if (TileManager.m_use && limite ) {
 				m_quete2 = false;
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(10);
+				m_player.updatePourcentageSatisfaction(20);
+				limite = false;
+				TileManager.m_use = false;
 			}
 		}else {
 			m_pnj_mobile.get(0).pause = true;
