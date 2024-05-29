@@ -150,10 +150,10 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		if (gameState==playState) {
-		m_player.update(m_tileM.isWall(640, 380),
-						m_tileM.isWall(670, 380),
-						m_tileM.isWall(650,375),
-						m_tileM.isWall(650,400))
+		m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
+						m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
+						m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
+						m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
 		;
 		
 		m_tileM.doorUpdate();
@@ -355,12 +355,12 @@ public class GamePanel extends JPanel implements Runnable{
 	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
 	public boolean reparationPossible(/*Graphics2D g2*/) {
 		if(m_tileM.reparationCoffee()) {
-			if(m_player.m_coins<100) {
+			if(Player.m_coins<100) {
 //				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
 				return false;
 			} else {
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
-				m_player.m_coins-=100;
+				Player.m_coins-=100;
 				machineReparee=true;
 				m_player.updatePourcentageSatisfaction(10);
 				return true;
@@ -382,7 +382,7 @@ public class GamePanel extends JPanel implements Runnable{
 				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
 
 			}
-			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
+			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(20);
@@ -417,10 +417,13 @@ public class GamePanel extends JPanel implements Runnable{
 			}else {
 				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
 			}
-			if (m_tileM.m_use) {
+			boolean limite = true ;
+			if (TileManager.m_use && limite ) {
 				m_quete2 = false;
 				m_player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(20);
+				limite = false;
+				TileManager.m_use = false;
 			}
 		}else {
 			m_pnj_mobile.get(0).pause = true;
