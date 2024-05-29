@@ -252,8 +252,8 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-        	coeff_satisfaction=m_nb_teacher/m_nb_student;
-            m_player.updatePourcentageSatisfaction(coeff_satisfaction);
+        	coeff_satisfaction=m_nb_student/m_nb_teacher;
+            m_player.updatePourcentageSatisfaction(-coeff_satisfaction);
 			int x=-5;
         	//la barre de vie diminue plus vite lorsque la machine à café est cassée
         	if(m_tileM.breakCoffee()) {
@@ -430,7 +430,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(20);
+				m_player.updatePourcentageSatisfaction(10);
 				m_quete1 = false;
 			}
 			
@@ -459,7 +459,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
 				inventaire.remove(m_clef);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(20);
+				m_player.updatePourcentageSatisfaction(10);
 				m_quete3 = false;
 			}
 		}

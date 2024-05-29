@@ -138,8 +138,8 @@ public class Player extends Entity{
 	
 	
 	public void updatePourcentageSatisfaction(float x) {
-		if (pourcentage_energy * x < 100) {
-			pourcentage_energy = pourcentage_energy*x;
+		if (pourcentage_energy +x < 100) {
+			pourcentage_energy = pourcentage_energy+x;
 		}
 		else {
 			pourcentage_energy = 100;
