@@ -1,13 +1,9 @@
 package main;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import entity.Player;
 
 import java.awt.BorderLayout;
 import javax.swing.*;

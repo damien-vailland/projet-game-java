@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Color;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import entity.Player;
@@ -16,16 +15,13 @@ import entity.pnj_mobile;
 import entity.toilet;
 import entity.coins;
 import entity.Craie;
-import entity.Entity;
 import tile.TileManager;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -259,10 +255,9 @@ public class GamePanel extends JPanel implements Runnable{
         	currentMonth = months[currentMonthIndex];
         	coeff_satisfaction=m_nb_student/m_nb_teacher;
             m_player.updatePourcentageSatisfaction(-coeff_satisfaction);
-			int x=-5;
         	//la barre de vie diminue plus vite lorsque la machine à café est cassée
         	if(m_tileM.breakCoffee()) {
-        		x*=2;
+        		m_player.updatePourcentageSatisfaction(-5);
         	}
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
 			entity.Player.AddCoins(entity.Player.salaire);
@@ -333,7 +328,7 @@ public class GamePanel extends JPanel implements Runnable{
 		// image du directeur: 
 		x=600;
 		y=250; 
-		g2.drawImage(this.m_player.m_idleImage,x,y, this.TILE_SIZE*2, this.TILE_SIZE*2, null);
+		g2.drawImage(GamePanel.m_player.m_idleImage,x,y, this.TILE_SIZE*2, this.TILE_SIZE*2, null);
 		//Menu
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 48F));
 		//NEW GAME: 
@@ -368,6 +363,7 @@ public class GamePanel extends JPanel implements Runnable{
 			m_tileM.draw(g2);
 
 			if (m_tileM.m_mapChoose == 1) {
+				drawpnj_004(g2);
 				for (pnj pnj:m_tab_pnj_1) {
 					pnj.draw(g2);
 				}
@@ -387,7 +383,6 @@ public class GamePanel extends JPanel implements Runnable{
 				m_add_prof.draw(g2);
 				m_add_eleve.draw(g2);
 			}
-			drawpnj_004(g2);
 			m_player.draw(g2);
 			drawSatisfactionBar(g2);
 			drawCurrentMonth(g2, currentMonth);
@@ -485,7 +480,7 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
-				m_player.updateScore(100);
+				Player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(15);
 				m_quete1 = false;
 			}
@@ -515,9 +510,9 @@ public class GamePanel extends JPanel implements Runnable{
 				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
 
 			}
-			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
+			if (TileManager.m_use && inventaire.contains(m_clef) ) {
 				inventaire.remove(m_clef);
-				m_player.updateScore(100);
+				Player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(15);
 				m_quete3 = false;
 			}
@@ -542,7 +537,7 @@ public class GamePanel extends JPanel implements Runnable{
 			boolean limite = true ;
 			if (TileManager.m_use && limite ) {
 				m_quete2 = false;
-				m_player.updateScore(100);
+				Player.updateScore(100);
 				m_player.updatePourcentageSatisfaction(15);
 				limite = false;
 				TileManager.m_use = false;
