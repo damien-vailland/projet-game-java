@@ -22,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        long monthDuration = 6 * 1000;
+        long monthDuration = 30 * 1000;
         long startTime = System.currentTimeMillis();
         String[] months = {"Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"};
 
