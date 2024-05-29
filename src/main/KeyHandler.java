@@ -72,6 +72,14 @@ public class KeyHandler implements KeyListener{
 		if(code==40) {
 			entity.Player.bas=false;
 		}
+		if(code==69) {
+			tile.TileManager.m_use=false;
+			entity.add_teachers.nouveau_prof=false;
+			entity.add_students.nouvel_eleve=false;
+		}
+		if(code==65) {
+			tile.TileManager.m_act=false;
+		}
 	}
 
 }

@@ -39,11 +39,11 @@ public class coins extends Entity{
 	}
 
 
-	public static void ajouterCoordonnees(List<List<Integer>> liste, int x, int y) {
+	public static void ajouterCoordonnees(int x, int y) {
         List<Integer> paire = new ArrayList<>();
         paire.add(x);
         paire.add(y);
-        liste.add(paire);
+        m_coordonee_coin.add(paire);
     }
 	
 	public static void add_Coins_to_panel(GamePanel a_gp,List<coins> tab_coins) {
@@ -65,13 +65,13 @@ public class coins extends Entity{
 	}
 	
 	public static void create_tab_coordonnees() {
-		ajouterCoordonnees(m_coordonee_coin, 1350, 580); //salle début
-		ajouterCoordonnees(m_coordonee_coin, 580, 800); //salle 02
-		ajouterCoordonnees(m_coordonee_coin, 1230, 1350); //bureau a gauche
-		ajouterCoordonnees(m_coordonee_coin, 2100, 450); //entree hall
-		ajouterCoordonnees(m_coordonee_coin, 2400, 650); //administration
-		ajouterCoordonnees(m_coordonee_coin, 3150, 200); // amphi L
-		ajouterCoordonnees(m_coordonee_coin, 2300,2100); //bulle
+		ajouterCoordonnees(1350, 580); //salle début
+		ajouterCoordonnees(580, 800); //salle 02
+		ajouterCoordonnees(1230, 1350); //bureau a gauche
+		ajouterCoordonnees(2100, 450); //entree hall
+		ajouterCoordonnees(2400, 650); //administration
+		ajouterCoordonnees(3150, 200); // amphi L
+		ajouterCoordonnees(2300,2100); //bulle
 	}
 	
 	public void draw(Graphics2D a_g2) {

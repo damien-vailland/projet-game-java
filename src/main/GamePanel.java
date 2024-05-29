@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public static Player m_player;
 	List<pnj> m_tab_pnj_1 = new ArrayList<>();
 	List<pnj> m_tab_pnj_2 = new ArrayList<>();
+	List<pnj> m_tab_pnj_004 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
 	List<Craie> m_tab_craies = new ArrayList<>();
 	List<toilet> m_tab_toilet = new ArrayList<>();
@@ -96,12 +97,13 @@ public class GamePanel extends JPanel implements Runnable{
 
 		entity.toilet.add_toilet_to_panel(this, m_tab_toilet);
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
-		
+
+		entity.pnj.create_tab_coordonnees();
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
 		
-		m_add_prof = new add_teachers(this,1150, 1550);
-		m_add_eleve = new add_students(this,1150, 1850);
+		m_add_prof = new add_teachers(this,1105, 1550);
+		m_add_eleve = new add_students(this,1105, 1850);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -159,24 +161,24 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		if (gameState==playState) {
-		m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
-						m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
-						m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
-						m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
-		;
-		
-		m_tileM.doorUpdate();
-		m_tileM.stairsUpdate(650, 380);
-		collectCoins();
-		if (add_teachers.nouveau_prof && check_add_prof()) {
-            add_teachers.ajout_prof();
-        }
-        if (add_students.nouvel_eleve && check_add_eleve()) {
-            add_students.ajout_eleve();
-        }
-        //Mise à jour du statut de la machine à café
-		m_tileM.coffeeUpdate();
-	}
+			m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
+							m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
+							m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
+							m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
+			;
+			
+			m_tileM.doorUpdate();
+			m_tileM.stairsUpdate(650, 380);
+			collectCoins();
+			if (add_teachers.nouveau_prof && check_add_prof()) {
+	            add_teachers.ajout_prof();
+	        }
+	        if (add_students.nouvel_eleve && check_add_eleve()) {
+	            add_students.ajout_eleve();
+	            entity.pnj.add_pnj_to_004(this,m_tab_pnj_004);
+	        }
+			m_tileM.coffeeUpdate();
+		}
 		else if (gameState==pauseState) {
 			//jeu arrêté
 		}
@@ -271,6 +273,11 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.setFont(new Font("Arial", Font.BOLD, 20));
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
+    public void drawpnj_004(Graphics2D g2) {
+		for(pnj pnj:m_tab_pnj_004) {
+			pnj.draw(g2);
+		}
+    }
     
     // Afficher l'action à réaliser lorsque le joueur est devant la machine à café cassée
     public void CoffeeMessage(Graphics2D g2) {
@@ -309,19 +316,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+		
 		m_tileM.draw(g2);
-		m_player.draw(g2);
-		drawSatisfactionBar(g2);
-		drawCurrentMonth(g2, currentMonth);
-		drawScore(g2);
-		drawCoin(g2);
-		DialoguePNJ(g2);
-		g2.setColor(Color.WHITE);
- 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
-		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
-		g2.drawString("Élève : "+m_nb_student, 0, 125);
-		CoffeeMessage(g2);
-		RappelMission(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -336,11 +332,12 @@ public class GamePanel extends JPanel implements Runnable{
 			for (clef clefs : m_tab_clef) {
 				clefs.draw(g2);
 		    }
+			for (pnj_mobile p : m_pnj_mobile) {
+	            p.update();
+	            p.draw(g2);
+	        }
 			m_add_prof.draw(g2);
 			m_add_eleve.draw(g2);
-		}
-		if (gameState==pauseState) {
-			drawPauseScreen( g2);
 		}
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
@@ -350,13 +347,28 @@ public class GamePanel extends JPanel implements Runnable{
 				pnj.draw(g2);
 			}
 		}
-		for (pnj_mobile p : m_pnj_mobile) {
-            p.update();
-            p.draw(g2);
-        }
+
+		drawpnj_004(g2);
+		m_player.draw(g2);
+		drawSatisfactionBar(g2);
+		drawCurrentMonth(g2, currentMonth);
+		drawScore(g2);
+		drawCoin(g2);
+		DialoguePNJ(g2);
+		g2.setColor(Color.WHITE);
+ 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+		g2.drawString("Élève : "+m_nb_student, 0, 125);
+		CoffeeMessage(g2);
+		RappelMission(g2);
+
+		if (gameState==pauseState) {
+			drawPauseScreen( g2);
+		}
 		
 		collectCraie();
 		collectClef();
+		
 		g2.dispose();
 	}
 	
@@ -406,8 +418,7 @@ public class GamePanel extends JPanel implements Runnable{
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
 				Player.m_coins-=100;
 				machineReparee=true;
-				m_player.updateScore(150);
-				m_player.updatePourcentageSatisfaction(10);
+				m_player.updatePourcentageSatisfaction(15);
 				return true;
 			}
 		}
@@ -430,22 +441,25 @@ public class GamePanel extends JPanel implements Runnable{
 			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(10);
+				m_player.updatePourcentageSatisfaction(15);
 				m_quete1 = false;
 			}
 			
 		}
 		if (m_player.checkCollision(m_tab_pnj_1.get(1).m_x, m_tab_pnj_1.get(1).m_y, TILE_SIZE)) {
-			g2.drawString("PNJ bureau", m_player.m_x, m_player.m_y - 10);
+			g2.drawString("Le stage est validé rédige maintenant ta convention !", m_player.m_x, m_player.m_y - 10);
 		}
 		if (m_player.checkCollision(m_tab_pnj_1.get(2).m_x, m_tab_pnj_1.get(2).m_y, TILE_SIZE)) {
-			g2.drawString("AMPHI M", m_player.m_x, m_player.m_y - 10);
+			g2.drawString("QUOICOUBEHH", m_player.m_x, m_player.m_y - 10);
 		}
 		if (m_player.checkCollision(m_tab_pnj_1.get(3).m_x, m_tab_pnj_1.get(3).m_y, TILE_SIZE)) {
 			g2.drawString("J'espère que les toilettes ne vont pas se boucher", m_player.m_x, m_player.m_y - 10);
 		}
 		if (m_player.checkCollision(m_tab_pnj_1.get(4).m_x, m_tab_pnj_1.get(4).m_y, TILE_SIZE)) {
 			g2.drawString("J'espère que les toilettes ne seront pas HS", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
+			g2.drawString("", m_player.m_x, m_player.m_y - 10);
 		}
 		
 		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
@@ -459,7 +473,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
 				inventaire.remove(m_clef);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(10);
+				m_player.updatePourcentageSatisfaction(15);
 				m_quete3 = false;
 			}
 		}
@@ -484,7 +498,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (TileManager.m_use && limite ) {
 				m_quete2 = false;
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(20);
+				m_player.updatePourcentageSatisfaction(15);
 				limite = false;
 				TileManager.m_use = false;
 			}
@@ -492,10 +506,6 @@ public class GamePanel extends JPanel implements Runnable{
 			m_pnj_mobile.get(0).pause = true;
 		}
 		
-		
-		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
-			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
-		}
 	}
 
 	public boolean check_add_eleve() {
