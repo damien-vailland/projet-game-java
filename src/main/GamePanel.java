@@ -21,6 +21,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -173,6 +174,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (add_students.nouvel_eleve && check_add_eleve()) {
             add_students.ajout_eleve();
         }
+        //Mise à jour du statut de la machine à café
 		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
@@ -216,8 +218,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void drawCoin(Graphics2D g2) {
 	    int coinBarWidth = 200; // Largeur totale de la barre d'argent
 	    int coinBarHeight = 20; // Hauteur de la barre d'argent
-	    int x = 250; // Position X de la barre d'énergie
-	    int y = 10; // Position Y de la barre d'énergie
+	    int x = 250; // Position X de la barre d'argent
+	    int y = 10; // Position Y de la barre d'argent
 
 	    // Arrière-plan de la barre d'argent
 	    g2.setColor(Color.YELLOW);
@@ -227,14 +229,14 @@ public class GamePanel extends JPanel implements Runnable{
 	    g2.setColor(Color.BLACK);
 	    g2.drawRect(x, y, coinBarWidth, coinBarHeight);
 	    
-	    g2.setColor(Color.BLACK);
-	    int coinValue = m_player.getCoin(); 
+	    g2.setColor(Color.BLACK); //couleur du texte
+	    int coinValue = m_player.getCoin(); // Récupérer la somme d'argent
 	    String text = String.valueOf(coinValue)+"€"; // Convertir l'entier en chaîne de caractères
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
 	    int textWidth = metrics.stringWidth(text);
-	    int textX = x + (coinBarWidth - textWidth) / 2;
+	    int textX = x + (coinBarWidth - textWidth) / 2; // Position x du texte pour qu'il soit centré
 	    int textY = y + ((coinBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
-	    g2.drawString(text, textX, textY);
+	    g2.drawString(text, textX, textY); //Ecrire le texte à la position textX, textY
 
 	}
 	
@@ -250,8 +252,8 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-        	coeff_satisfaction=m_nb_teacher/m_nb_student;
-            m_player.updatePourcentageSatisfaction(coeff_satisfaction);
+        	coeff_satisfaction=m_nb_student/m_nb_teacher;
+            m_player.updatePourcentageSatisfaction(-coeff_satisfaction);
 			int x=-5;
         	//la barre de vie diminue plus vite lorsque la machine à café est cassée
         	if(m_tileM.breakCoffee()) {
@@ -270,11 +272,13 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
     
+    // Afficher l'action à réaliser lorsque le joueur est devant la machine à café cassée
     public void CoffeeMessage(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
+        // Si le joueur est devant la machine cassée, le message s'affiche au dessus de lui
         if(m_tileM.behindBreakCoffee()) {
-    		g2.drawString("Appuyer sur a pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
+    		g2.drawString("Appuyer sur A pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
         }
     }
     
@@ -301,6 +305,7 @@ public class GamePanel extends JPanel implements Runnable{
     	
     }
 
+    // Permet l'affichage sur l'écran de jeu
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -388,8 +393,11 @@ public class GamePanel extends JPanel implements Runnable{
         m_tab_clef.removeAll(collectedclefs);
     }
 	
-	//Verifie l'argent disponible pour savaoir si les réparations sont possibles
-	public boolean reparationPossible(/*Graphics2D g2*/) {
+	/**Verifie l'argent disponible pour savoir si les réparations sont possibles
+	 * si c'est le cas: augmentation du score et de la satisfaction, diminution 
+	 * de l'argent et mise à jour de la variable machineRéparée
+	*/
+	public boolean reparationPossible() {
 		if(m_tileM.reparationCoffee()) {
 			if(Player.m_coins<100) {
 //				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
@@ -398,6 +406,7 @@ public class GamePanel extends JPanel implements Runnable{
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
 				Player.m_coins-=100;
 				machineReparee=true;
+				m_player.updateScore(150);
 				m_player.updatePourcentageSatisfaction(10);
 				return true;
 			}
@@ -421,7 +430,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (TileManager.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(20);
+				m_player.updatePourcentageSatisfaction(10);
 				m_quete1 = false;
 			}
 			
@@ -450,7 +459,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
 				inventaire.remove(m_clef);
 				m_player.updateScore(100);
-				m_player.updatePourcentageSatisfaction(20);
+				m_player.updatePourcentageSatisfaction(10);
 				m_quete3 = false;
 			}
 		}
