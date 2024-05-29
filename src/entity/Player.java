@@ -20,7 +20,7 @@ public class Player extends Entity{
 
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
 	static float pourcentage_energy;
-	int score;
+	static int score;
 	public static int salaire=0;
 	public static int m_coins=40;
 	
@@ -146,7 +146,7 @@ public class Player extends Entity{
 		}
 	}
 	
-	public void updateScore(int x) {
+	public static void updateScore(int x) {
 			score += x;
 	}
 	
