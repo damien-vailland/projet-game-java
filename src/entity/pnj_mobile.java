@@ -37,14 +37,14 @@ public class pnj_mobile extends Entity {
 
     public void getPlayerImage() {
         try {
-            m_idleImages[0][0] = ImageIO.read(getClass().getResource("/player/pnj-2-front-1.png"));
-            m_idleImages[0][1] = ImageIO.read(getClass().getResource("/player/pnj-2-front-2.png"));
-            m_idleImages[0][2] = ImageIO.read(getClass().getResource("/player/pnj-2-front-1.png"));
-            m_idleImages[0][3] = ImageIO.read(getClass().getResource("/player/pnj-2-front-4.png"));
-            m_idleImages[1][0] = ImageIO.read(getClass().getResource("/player/pnj-2-back-1.png"));
-            m_idleImages[1][1] = ImageIO.read(getClass().getResource("/player/pnj-2-back-2.png"));
-            m_idleImages[1][2] = ImageIO.read(getClass().getResource("/player/pnj-2-back-1.png"));
-            m_idleImages[1][3] = ImageIO.read(getClass().getResource("/player/pnj-2-back-4.png"));
+            m_idleImages[0][0] = ImageIO.read(getClass().getResource("/player/pnj-4-front-1.png"));
+            m_idleImages[0][1] = ImageIO.read(getClass().getResource("/player/pnj-4-front-2.png"));
+            m_idleImages[0][2] = ImageIO.read(getClass().getResource("/player/pnj-4-front-1.png"));
+            m_idleImages[0][3] = ImageIO.read(getClass().getResource("/player/pnj-4-front-4.png"));
+            m_idleImages[1][0] = ImageIO.read(getClass().getResource("/player/pnj-4-back-1.png"));
+            m_idleImages[1][1] = ImageIO.read(getClass().getResource("/player/pnj-4-back-2.png"));
+            m_idleImages[1][2] = ImageIO.read(getClass().getResource("/player/pnj-4-back-1.png"));
+            m_idleImages[1][3] = ImageIO.read(getClass().getResource("/player/pnj-4-back-4.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

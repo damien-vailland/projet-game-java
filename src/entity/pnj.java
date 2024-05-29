@@ -18,6 +18,7 @@ public class pnj extends Entity{
 
 	static int nb_student=0;
 	GamePanel m_gp;
+	private int m_indice_pnj = 0;
 	public static List<List<Integer>> m_tab_coordonee_pnj = new ArrayList<>();
 	
 	/**
@@ -47,7 +48,8 @@ public class pnj extends Entity{
 	public void getPlayerImage() {
 		//gestion des expections 
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-1.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-" + (m_indice_pnj+1) + ".png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
