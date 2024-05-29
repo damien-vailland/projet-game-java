@@ -13,7 +13,7 @@ import main.GamePanel;
  * D�fintition du comportement d'un joueur
  *
  */
-public class pnj extends Entity{
+public class toilet extends Entity{
 
 	GamePanel m_gp;
 	
@@ -22,7 +22,7 @@ public class pnj extends Entity{
 	 * @param a_gp GamePanel, pannel principal du jeu
 	 * @param a_keyH KeyHandler, gestionnaire des touches 
 	 */
-	public pnj(GamePanel a_gp,int x,int y) {
+	public toilet(GamePanel a_gp,int x,int y) {
 		this.m_x=x;
 		this.m_y=y;
 		this.m_gp = a_gp;
@@ -44,7 +44,7 @@ public class pnj extends Entity{
 	public void getPlayerImage() {
 		//gestion des expections 
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-1.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/object/toilet.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,17 +63,20 @@ public class pnj extends Entity{
 		a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
-	public static void add_pnj_to_panel(GamePanel a_gp,List<pnj> tab_pnj_1,List<pnj> tab_pnj_2) {
-		tab_pnj_1.add(new pnj(a_gp, 700,350));//salle de classe 01
-		tab_pnj_1.add(new pnj(a_gp, 1650, 1250));//bureau 
-		tab_pnj_1.add(new pnj(a_gp, 2900, 1050));//amphi M
-		tab_pnj_1.add(new pnj(a_gp, 500,2214)); //toilette fille gauche
-		tab_pnj_1.add(new pnj(a_gp, 2500, 2214)); //toilette garçon droite
-		tab_pnj_1.add(new pnj(a_gp, 2200, 2050)); //machine à café
-		tab_pnj_1.add(new pnj(a_gp, 2400, 450)); //bureau julien gavard
+	public static void add_toilet_to_panel(GamePanel a_gp,List<toilet> tab_toilet) {
+		tab_toilet.add(new toilet(a_gp, 500,2302)); 
+		tab_toilet.add(new toilet(a_gp, 700,2302)); 
+		tab_toilet.add(new toilet(a_gp, 600,2302)); 
 		
-		tab_pnj_2.add(new pnj(a_gp, 700,700)); //salle de classe 102
-		tab_pnj_2.add(new pnj(a_gp, 2400, 650));//BDE
+		tab_toilet.add(new toilet(a_gp, 350,2302)); 
+		tab_toilet.add(new toilet(a_gp, 250,2302)); 
+		tab_toilet.add(new toilet(a_gp, 150,2302)); 
+		
+		tab_toilet.add(new toilet(a_gp, 2450,2302));
+		tab_toilet.add(new toilet(a_gp, 2550,2302)); 
+		
+		tab_toilet.add(new toilet(a_gp, 2250,2302)); 
+		tab_toilet.add(new toilet(a_gp, 2150,2302)); 
 	}
 	
 }

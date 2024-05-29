@@ -18,12 +18,16 @@ public class Player extends Entity{
 	GamePanel m_gp;
 	KeyHandler m_keyH;
 
-	public int m_boxG,m_boxD,m_boxH,m_boxB;
 	public static boolean gauche=false,droite=false,haut=false,bas=false; 
-	int pourcentage_energy;
-	int score;
-	static int m_coins=40;
+	static float pourcentage_energy;
+	static int score;
+	public static int salaire=0;
+	public static int m_coins=40;
 	
+    private BufferedImage[][] m_idleImages = new BufferedImage[4][4];
+	int m_indice = 0;
+	int m_delay_anim = 0;
+	int m_direction = 0;
 	/**
 	 * Constructeur de Player
 	 * @param a_gp GamePanel, pannel principal du jeu
@@ -45,11 +49,6 @@ public class Player extends Entity{
 		m_x = 632;
 		m_y = 352;
 		m_speed = 4;
-		
-		m_boxG = 592;
-		m_boxD = 688;
-		m_boxH = 400;
-		m_boxB=800;
 	}
 
 	
@@ -66,7 +65,7 @@ public class Player extends Entity{
 		
 	}
 	
-	public int getPourcentageEnergy() {
+	public float getPourcentageSatisfaction() {
 	    return pourcentage_energy;
 	}
 	
@@ -85,28 +84,56 @@ public class Player extends Entity{
 	 * Mise � jour des donn�es du joueur
 	 */
 	public void update(boolean murG, boolean murD, boolean murH, boolean murB) {
-		if(gauche && !murG) {
-			m_gp.scrollOffsetX += m_speed;
+		if(gauche || haut || bas || droite) {
+			if(m_delay_anim >= m_speed ) {
+				if(m_indice >= 3) {
+					m_indice = 0;
+				} else {
+					m_indice++;
+				}
+				m_delay_anim=0;
+			} else {
+				m_delay_anim++;
+			}
 		}
-		if(droite && !murD) {
-			m_gp.scrollOffsetX -=  m_speed;
+		if(gauche) {
+			m_direction=1;
+			if(!murG) {
+				m_gp.scrollOffsetX += m_speed;
+			}
 		}
-		if(haut && !murH){
-			m_gp.scrollOffsetY += m_speed;
+		if(droite) {
+			m_direction=2;
+			if(!murD) {
+				m_gp.scrollOffsetX -=  m_speed;
+			}
 		}
-		if(bas && !murB){
-			m_gp.scrollOffsetY -=  m_speed;
+		if(haut){
+			m_direction=3;
+			if(!murH) {
+				m_gp.scrollOffsetY += m_speed;
+			}
+		}
+		if(bas){
+			m_direction=0;
+			if(!murB) {
+				m_gp.scrollOffsetY -=  m_speed;
+			}
 		}
 	}
 	
 	
-	public void updatePourcentageEnergy(int x) {
-		if (pourcentage_energy + x < 100) {
-			pourcentage_energy += x;
+	public void updatePourcentageSatisfaction(float x) {
+		if (pourcentage_energy +x < 100) {
+			pourcentage_energy = pourcentage_energy+x;
 		}
 		else {
 			pourcentage_energy = 100;
 		}
+	}
+	
+	public static void updateScore(int x) {
+			score += x;
 	}
 	
 	
@@ -116,23 +143,23 @@ public class Player extends Entity{
 	 */
 	public void draw(Graphics2D a_g2) {
 		// r�cup�re l'image du joueur
-		BufferedImage l_image = m_idleImage;
+		BufferedImage l_image = m_idleImages[m_direction][m_indice];
 		// affiche le personnage avec l'image "image", avec les coordonn�es x et y, et de taille tileSize (16x16) sans �chelle, et 48x48 avec �chelle)
 		a_g2.drawImage(l_image, m_x, m_y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
-	public boolean checkCollision(int coinX, int coinY, int coinSize) {
+	public boolean checkCollision(int X, int Y, int Size) {
 	    int playerLeft = m_x;
 	    int playerRight = m_x + m_gp.TILE_SIZE;
 	    int playerTop = m_y;
 	    int playerBottom = m_y + m_gp.TILE_SIZE;
 
-	    int coinLeft = coinX + m_gp.scrollOffsetX;
-	    int coinRight = coinX + m_gp.scrollOffsetX + coinSize;
-	    int coinTop = coinY + m_gp.scrollOffsetY;
-	    int coinBottom = coinY + m_gp.scrollOffsetY + coinSize;
+	    int Left = X + m_gp.scrollOffsetX;
+	    int Right = X + m_gp.scrollOffsetX + Size;
+	    int Top = Y + m_gp.scrollOffsetY;
+	    int Bottom = Y + m_gp.scrollOffsetY + Size;
 
-	    return !(playerLeft >= coinRight || playerRight <= coinLeft || playerTop >= coinBottom || playerBottom <= coinTop);
+	    return !(playerLeft >= Right || playerRight <= Left || playerTop >= Bottom || playerBottom <= Top);
 	}
 
 	

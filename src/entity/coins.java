@@ -15,10 +15,21 @@ public class coins extends Entity{
 	public static int nb_coins=0;
 	public static List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	public GamePanel m_gp;
+    private BufferedImage[] m_idleImages = new BufferedImage[8];
+	int m_indice = 0;
+	int m_delay_anim = 0;
 	
 	public coins(GamePanel a_gp,int x,int y) {
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/object/coins.png"));
+//			m_idleImage = ImageIO.read(getClass().getResource("/object/coins.png"));
+            m_idleImages[0] = ImageIO.read(getClass().getResource("/object/coins.png"));
+            m_idleImages[1] = ImageIO.read(getClass().getResource("/object/coins-1.png"));
+            m_idleImages[2] = ImageIO.read(getClass().getResource("/object/coins-2.png"));
+            m_idleImages[3] = ImageIO.read(getClass().getResource("/object/coins-3.png"));
+            m_idleImages[4] = ImageIO.read(getClass().getResource("/object/coins-4.png"));
+            m_idleImages[5] = ImageIO.read(getClass().getResource("/object/coins-3.png"));
+            m_idleImages[6] = ImageIO.read(getClass().getResource("/object/coins-2.png"));
+            m_idleImages[7] = ImageIO.read(getClass().getResource("/object/coins-1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -65,8 +76,19 @@ public class coins extends Entity{
 	
 	public void draw(Graphics2D a_g2) {
 		// r�cup�re l'image du joueur
-		BufferedImage l_image = m_idleImage;
+		if(m_delay_anim >= 4 ) {
+				if(m_indice >= 7) {
+					m_indice = 0;
+				} else {
+					m_indice++;
+				}
+				m_delay_anim=0;
+		} else {
+			m_delay_anim++;
+		}
+		BufferedImage l_image = m_idleImages[m_indice];
 		int screenX = m_x + m_gp.scrollOffsetX;
-	    int screenY = m_y + m_gp.scrollOffsetY;a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+	    int screenY = m_y + m_gp.scrollOffsetY;
+	    a_g2.drawImage(l_image, screenX, screenY, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 }

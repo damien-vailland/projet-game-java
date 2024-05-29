@@ -3,6 +3,8 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import entity.add_teachers;
+
 /**
  * Gestionnaire d'�v�nements (touche clavier)
  *
@@ -24,7 +26,7 @@ public class KeyHandler implements KeyListener{
 		// r�cup�re le code du boutton appuy�
 		
 		int code = e.getKeyCode();
-		System.out.println(code);
+		
 		// condition sur commandeNum; 
 		if (m_gp.gameState==m_gp.titleState) {
 			if (code==38) {
@@ -70,6 +72,11 @@ public class KeyHandler implements KeyListener{
 		}
 		if(code==69) {
 			tile.TileManager.m_use=true;
+			entity.add_teachers.nouveau_prof=true;
+			entity.add_students.nouvel_eleve=true;
+		}
+		if(code==65) {
+			tile.TileManager.m_act=true;
 		}
 	}
 

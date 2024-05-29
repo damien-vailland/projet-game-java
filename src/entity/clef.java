@@ -9,13 +9,13 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 
-public class Craie extends Entity{
+public class clef extends Entity{
 
 	public GamePanel m_gp;
 	
-	public Craie(GamePanel a_gp,int x,int y) {
+	public clef(GamePanel a_gp,int x,int y) {
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/object/craie.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/object/clef.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

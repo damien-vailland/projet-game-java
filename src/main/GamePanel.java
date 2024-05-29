@@ -8,7 +8,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.add_teachers;
+import entity.clef;
+import entity.add_students;
 import entity.pnj;
+import entity.pnj_mobile;
+import entity.toilet;
 import entity.coins;
 import entity.Craie;
 import entity.Entity;
@@ -20,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -39,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int SCREEN_HEIGHT = 720 ;	// 576 pixels
 	public int scrollOffsetX = -1000;
 	public int scrollOffsetY = -500;
+	public boolean machineReparee = false;
 
 	// FPS : taux de rafraichissement
 	int m_FPS;
@@ -46,41 +53,59 @@ public class GamePanel extends JPanel implements Runnable{
 	// Cr�ation des diff�rentes instances (Player, KeyHandler, TileManager, GameThread ...)
 	KeyHandler m_keyH;
 	Thread m_gameThread;
-	Player m_player;
+	public static Player m_player;
 	List<pnj> m_tab_pnj_1 = new ArrayList<>();
 	List<pnj> m_tab_pnj_2 = new ArrayList<>();
 	List<coins> m_tab_coins = new ArrayList<>();
-	List<Craie> m_tab_craies;
+	List<Craie> m_tab_craies = new ArrayList<>();
+	List<toilet> m_tab_toilet = new ArrayList<>();
 	Craie m_craie;
+	List<clef> m_tab_clef= new ArrayList<>();
+	clef m_clef;
 	List<Object> inventaire;
+
 	List<List<Integer>> m_coordonee_coin = new ArrayList<>();
 	TileManager m_tileM;
+	add_teachers m_add_prof;
+	add_students m_add_eleve;
+
+	public static int m_nb_teacher=1;
+	public static int m_nb_student=1;
 	
-	String currentMonth = "Septembre";
+	float coeff_satisfaction=1;
+	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
+	boolean m_quete1;
+	boolean m_quete2;
+	boolean m_quete3;
+	
+	public String currentMonth = "Septembre";
 	
 	/**
 	 * Constructeur
 	 */
 	public GamePanel() {
+		m_quete1 = true;
+		m_quete2 = true;
+		m_quete3 = true;
 		m_FPS = 60;				
 		m_keyH = new KeyHandler(this);
 		m_player = new Player(this, m_keyH);
 		inventaire = new ArrayList<>();
-		m_tab_craies = new ArrayList<>();
 		m_craie = new Craie(this, 700,1000);
 		m_tab_craies.add(m_craie);
+		m_clef = new clef(this,2400, 825);
+		m_tab_clef.add(m_clef);
 		m_tileM = new TileManager(this);
-		 
-		// initialisation: 
-		
-		
-		
-		
-		
+		m_pnj_mobile.add(new pnj_mobile(this,2250,1800,2250,1400 ));
+
+		entity.toilet.add_toilet_to_panel(this, m_tab_toilet);
 		entity.pnj.add_pnj_to_panel(this,m_tab_pnj_1,m_tab_pnj_2);
 		
 		entity.coins.create_tab_coordonnees();
 		entity.coins.add_Coins_to_panel(this,m_tab_coins);
+		
+		m_add_prof = new add_teachers(this,1150, 1550);
+		m_add_eleve = new add_students(this,1150, 1850);
 		
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
@@ -129,7 +154,6 @@ public class GamePanel extends JPanel implements Runnable{
 				nextDrawTime += drawInterval;
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -141,14 +165,23 @@ public class GamePanel extends JPanel implements Runnable{
 	 */
 	public void update() {
 		if (gameState==playState) {
-		m_player.update(m_tileM.isWall(640, 380),
-						m_tileM.isWall(670, 380),
-						m_tileM.isWall(650,375),
-						m_tileM.isWall(650,400))
+		m_player.update(m_tileM.isWall(640, 375) && m_tileM.isWall(640, 400),
+						m_tileM.isWall(670, 375) && m_tileM.isWall(670, 400),
+						m_tileM.isWall(640,375) && m_tileM.isWall(670,375),
+						m_tileM.isWall(640,400) && m_tileM.isWall(670,400))
 		;
+		
 		m_tileM.doorUpdate();
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
+		if (add_teachers.nouveau_prof && check_add_prof()) {
+            add_teachers.ajout_prof();
+        }
+        if (add_students.nouvel_eleve && check_add_eleve()) {
+            add_students.ajout_eleve();
+        }
+        //Mise à jour du statut de la machine à café
+		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
 			//jeu arrêté
@@ -158,32 +191,32 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
-	public void drawEnergyBar(Graphics2D g2) {
-	    int energyBarWidth = 200; // Largeur totale de la barre d'énergie
-	    int energyBarHeight = 20; // Hauteur de la barre d'énergie
+	public void drawSatisfactionBar(Graphics2D g2) {
+	    int satisfactionBarWidth = 200; // Largeur totale de la barre d'énergie
+	    int satisfactionBarHeight = 20; // Hauteur de la barre d'énergie
 	    int x = 10; // Position X de la barre d'énergie
 	    int y = 10; // Position Y de la barre d'énergie
 
 	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
-	    int currentEnergyWidth = (int) (energyBarWidth * (m_player.getPourcentageEnergy() / 100.0));
+	    int currentSatisfactionWidth = (int) (satisfactionBarWidth * (m_player.getPourcentageSatisfaction() / 100.0));
 
 	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
 	    g2.setColor(Color.GRAY);
-	    g2.fillRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.fillRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 
 	    // Dessiner la barre d'énergie actuelle (en vert)
 	    g2.setColor(Color.GREEN);
-	    g2.fillRect(x, y, currentEnergyWidth, energyBarHeight);
+	    g2.fillRect(x, y, currentSatisfactionWidth, satisfactionBarHeight);
 
 	    // Dessiner le contour de la barre d'énergie
 	    g2.setColor(Color.BLACK);
-	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.drawRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 	    
 	    g2.setColor(Color.BLACK);
-	    String text = "Energie";
+	    String text = "Satisfaction";
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
-	    int textX = x + (energyBarWidth - metrics.stringWidth(text)) / 2;
-	    int textY = y + ((energyBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+	    int textX = x + (satisfactionBarWidth - metrics.stringWidth(text)) / 2;
+	    int textY = y + ((satisfactionBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
 	    g2.drawString(text, textX, textY);
 	}
 	
@@ -191,8 +224,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void drawCoin(Graphics2D g2) {
 	    int coinBarWidth = 200; // Largeur totale de la barre d'argent
 	    int coinBarHeight = 20; // Hauteur de la barre d'argent
-	    int x = 250; // Position X de la barre d'énergie
-	    int y = 10; // Position Y de la barre d'énergie
+	    int x = 250; // Position X de la barre d'argent
+	    int y = 10; // Position Y de la barre d'argent
 
 	    // Arrière-plan de la barre d'argent
 	    g2.setColor(Color.YELLOW);
@@ -202,14 +235,14 @@ public class GamePanel extends JPanel implements Runnable{
 	    g2.setColor(Color.BLACK);
 	    g2.drawRect(x, y, coinBarWidth, coinBarHeight);
 	    
-	    g2.setColor(Color.BLACK);
-	    int coinValue = m_player.getCoin(); 
+	    g2.setColor(Color.BLACK); //couleur du texte
+	    int coinValue = m_player.getCoin(); // Récupérer la somme d'argent
 	    String text = String.valueOf(coinValue)+"€"; // Convertir l'entier en chaîne de caractères
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
 	    int textWidth = metrics.stringWidth(text);
-	    int textX = x + (coinBarWidth - textWidth) / 2;
+	    int textX = x + (coinBarWidth - textWidth) / 2; // Position x du texte pour qu'il soit centré
 	    int textY = y + ((coinBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
-	    g2.drawString(text, textX, textY);
+	    g2.drawString(text, textX, textY); //Ecrire le texte à la position textX, textY
 
 	}
 	
@@ -225,8 +258,15 @@ public class GamePanel extends JPanel implements Runnable{
         int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
         if (currentMonth != months[currentMonthIndex]) {
         	currentMonth = months[currentMonthIndex];
-            m_player.updatePourcentageEnergy(-5);
+        	coeff_satisfaction=m_nb_student/m_nb_teacher;
+            m_player.updatePourcentageSatisfaction(-coeff_satisfaction);
+			int x=-5;
+        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+        	if(m_tileM.breakCoffee()) {
+        		x*=2;
+        	}
             entity.coins.add_Coins_to_panel(this,m_tab_coins);
+			entity.Player.AddCoins(entity.Player.salaire);
         }
     }
 	
@@ -237,7 +277,25 @@ public class GamePanel extends JPanel implements Runnable{
  	    g2.setFont(new Font("Arial", Font.BOLD, 20));
  	    g2.drawString("Score : " + m_player.getScore(), x, y);
     }
-  
+    
+    // Afficher l'action à réaliser lorsque le joueur est devant la machine à café cassée
+    public void CoffeeMessage(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        // Si le joueur est devant la machine cassée, le message s'affiche au dessus de lui
+        if(m_tileM.behindBreakCoffee()) {
+    		g2.drawString("Appuyer sur A pour réparer la machine à café (cela coutera 100€)", m_player.m_x, m_player.m_y - 10);
+        }
+    }
+    
+    //Afficher des messages si des missions n'ont pas été réalisé au bout d'un certain temps
+    public void RappelMission(Graphics2D g2) {
+    	g2.setColor(Color.BLACK);
+    	g2.setFont(new Font("Arial", Font.BOLD, 12));
+        if(m_tileM.breakCoffee() && currentMonth=="Décembre") {
+    		g2.drawString("Il y a un problème au niveau de la machine à café dans le Hall...", 800, 600);
+        }
+    }
 
 	/**
 	 * Affichage des �l�ments
@@ -294,6 +352,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 	}
 
+    // Permet l'affichage sur l'écran de jeu
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		if(gameState==titleState) {
@@ -303,11 +362,17 @@ public class GamePanel extends JPanel implements Runnable{
 		super.paintComponent(g);
 		m_tileM.draw(g2);
 		m_player.draw(g2);
-		drawEnergyBar(g2);
+		drawSatisfactionBar(g2);
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
 		DialoguePNJ(g2);
+		g2.setColor(Color.WHITE);
+ 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+		g2.drawString("Élève : "+m_nb_student, 0, 125);
+		CoffeeMessage(g2);
+		RappelMission(g2);
 
 		if (m_tileM.m_mapChoose == 1) {
 			for (pnj pnj:m_tab_pnj_1) {
@@ -316,11 +381,18 @@ public class GamePanel extends JPanel implements Runnable{
 			for (coins coin:m_tab_coins) {
 				coin.draw(g2);
 			}
+			for (toilet toilets:m_tab_toilet) {
+				toilets.draw(g2);
+			}
+			for (clef clefs : m_tab_clef) {
+				clefs.draw(g2);
+		    }
+			m_add_prof.draw(g2);
+			m_add_eleve.draw(g2);
 		}
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
 		}
-		
 		if (m_tileM.m_mapChoose == 2) {
 			for (Craie craie : m_tab_craies) {
 				craie.draw(g2);
@@ -329,11 +401,15 @@ public class GamePanel extends JPanel implements Runnable{
 				pnj.draw(g2);
 			}
 		}
+		for (pnj_mobile p : m_pnj_mobile) {
+            p.update();
+            p.draw(g2);
+        }
 		
 		collectCraie();
-		g2.dispose();}
-		
-	}
+		collectClef();
+		g2.dispose(); 
+	}}
 	
 	public void collectCoins() {
 	    List<coins> collectedCoins = new ArrayList<>();
@@ -357,21 +433,56 @@ public class GamePanel extends JPanel implements Runnable{
         }
         m_tab_craies.removeAll(collectedCraies);
     }
+	public void collectClef() {
+        List<clef> collectedclefs = new ArrayList<>();
+        for (clef clefs : m_tab_clef) {
+            if (m_player.checkCollision(clefs.m_x, clefs.m_y, TILE_SIZE)) {
+            	collectedclefs.add(clefs);
+                inventaire.add(clefs);
+            }
+        }
+        m_tab_clef.removeAll(collectedclefs);
+    }
+	
+	/**Verifie l'argent disponible pour savoir si les réparations sont possibles
+	 * si c'est le cas: augmentation du score et de la satisfaction, diminution 
+	 * de l'argent et mise à jour de la variable machineRéparée
+	*/
+	public boolean reparationPossible() {
+		if(m_tileM.reparationCoffee()) {
+			if(Player.m_coins<100) {
+//				g2.drawString("Pas assez d'argent", m_player.m_x, m_player.m_y - 10);
+				return false;
+			} else {
+//				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
+				Player.m_coins-=100;
+				machineReparee=true;
+				m_player.updateScore(150);
+				m_player.updatePourcentageSatisfaction(10);
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public void DialoguePNJ(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         
+
 		if (m_player.checkCollision(m_tab_pnj_1.get(0).m_x, m_tab_pnj_1.get(0).m_y, TILE_SIZE)) {
-			boolean var = true;
-			if (var) {
-				g2.drawString("Tu peux aller me chercher une craie dans la salle 103 ?", m_player.m_x, m_player.m_y - 10);
-			}
-			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
-				inventaire.remove(m_craie);
-				entity.Player.AddCoins(100);
-				var = false;
+			
+			if (m_quete1) {
+				g2.drawString("Tu peux aller me chercher une craie dans la salle 003 ?", m_player.m_x, m_player.m_y - 10);
+			}else {
 				g2.drawString("Merci beaucoup pour ces craies !", m_player.m_x, m_player.m_y - 10);
+
+			}
+			if (TileManager.m_use && inventaire.contains(m_craie) ) {
+				inventaire.remove(m_craie);
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(10);
+				m_quete1 = false;
 			}
 			
 		}
@@ -381,10 +492,69 @@ public class GamePanel extends JPanel implements Runnable{
 		if (m_player.checkCollision(m_tab_pnj_1.get(2).m_x, m_tab_pnj_1.get(2).m_y, TILE_SIZE)) {
 			g2.drawString("AMPHI M", m_player.m_x, m_player.m_y - 10);
 		}
+		if (m_player.checkCollision(m_tab_pnj_1.get(3).m_x, m_tab_pnj_1.get(3).m_y, TILE_SIZE)) {
+			g2.drawString("J'espère que les toilettes ne vont pas se boucher", m_player.m_x, m_player.m_y - 10);
+		}
+		if (m_player.checkCollision(m_tab_pnj_1.get(4).m_x, m_tab_pnj_1.get(4).m_y, TILE_SIZE)) {
+			g2.drawString("J'espère que les toilettes ne seront pas HS", m_player.m_x, m_player.m_y - 10);
+		}
 		
 		if (m_player.checkCollision(m_tab_pnj_2.get(1).m_x, m_tab_pnj_2.get(1).m_y, TILE_SIZE)) {
-			g2.drawString("Bienvenue au BDE", m_player.m_x, m_player.m_y - 10);
+			if (m_quete3) {
+				g2.drawString("Peux tu aller me chercher les clefs dans le bureau en bas, ", m_player.m_x, m_player.m_y - 20);
+				g2.drawString("Pour ouvrir le local ?", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+
+			}
+			if (m_tileM.m_use && inventaire.contains(m_clef) ) {
+				inventaire.remove(m_clef);
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(10);
+				m_quete3 = false;
+			}
 		}
+		
+		if (m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouveau professeur !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("-300€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		if (m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE)) {
+			g2.drawString("Appuyez sur E pour ajouter un nouvel élève !", m_player.m_x, m_player.m_y - 20);
+			g2.drawString("+50€", m_player.m_x, m_player.m_y - 20 + g2.getFontMetrics().getHeight());
+		}
+		
+		if(m_player.checkCollision(m_pnj_mobile.get(0).m_x, m_pnj_mobile.get(0).m_y, TILE_SIZE)) {
+			m_pnj_mobile.get(0).pause = false;
+			if(m_quete2) {
+				g2.drawString("Joshua : A l'aide je ne sais pas dans quelle salle je suis !", m_player.m_x, m_player.m_y - 10);
+			}else {
+				g2.drawString("Merci beaucoup !", m_player.m_x, m_player.m_y - 10);
+			}
+			boolean limite = true ;
+			if (TileManager.m_use && limite ) {
+				m_quete2 = false;
+				m_player.updateScore(100);
+				m_player.updatePourcentageSatisfaction(20);
+				limite = false;
+				TileManager.m_use = false;
+			}
+		}else {
+			m_pnj_mobile.get(0).pause = true;
+		}
+		
+		
+		if (m_player.checkCollision(m_tab_pnj_1.get(6).m_x, m_tab_pnj_1.get(6).m_y, TILE_SIZE)) {
+			g2.drawString("Juju gavard : Joshua est en salle 004", m_player.m_x, m_player.m_y - 10);
+		}
+	}
+
+	public boolean check_add_eleve() {
+	    return m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE);
+	}
+
+	public boolean check_add_prof() {
+	    return m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE);
 	}
 	
 }
