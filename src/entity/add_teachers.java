@@ -40,6 +40,7 @@ public class add_teachers extends Entity{
 			entity.Player.pourcentage_energy+=10;
 			entity.Player.salaire+=10;
 			main.GamePanel.m_nb_teacher+=1;
+			entity.Player.updateScore(100);
 			nouveau_prof=false;
 		}
 		else if (nouveau_prof) {
