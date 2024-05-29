@@ -185,9 +185,6 @@ public class GamePanel extends JPanel implements Runnable{
 	        }
 			m_tileM.coffeeUpdate();
 		}
-		else if (gameState==pauseState) {
-			//jeu arrêté
-		}
 		}
 	
 	/**
@@ -307,15 +304,15 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
-    public void drawPauseScreen( Graphics2D g2) {
-    	String m_text="GAME PAUSED"; 
-    	int x=450;
-    	int y=400;
-    	g2.setColor(Color.red);
-    	g2.setFont(new Font("Arial", Font.BOLD, 50));
-    	g2.drawString(m_text, x, y);
-    	
-    }
+//    public void drawPauseScreen( Graphics2D g2) {
+//    	String m_text="GAME PAUSED"; 
+//    	int x=450;
+//    	int y=400;
+//    	g2.setColor(Color.red);
+//    	g2.setFont(new Font("Arial", Font.BOLD, 50));
+//    	g2.drawString(m_text, x, y);
+//    	
+//    }
     // dessiner un title 
 	public void drawTitleScreen(Graphics2D g2) {
 		//background
@@ -323,8 +320,9 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.fillRect(0,0,this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 		//Title name
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 130F ));
-		String text ="Gestion ESIR";
-		int x=175; 
+		String text ="ESIR LAND";
+		int textWidth = g2.getFontMetrics().stringWidth(text); // Get the width of the text
+	    int x = (this.SCREEN_WIDTH - textWidth) / 2; // Calculate x-coordinate to center horizontally
 		int y=200; 
 		//shadow
 		g2.setColor(Color.GRAY);
@@ -411,9 +409,6 @@ public class GamePanel extends JPanel implements Runnable{
 			for (pnj pnj:m_tab_pnj_2) {
 				pnj.draw(g2);
 			}
-		}
-		if (gameState==pauseState) {
-			drawPauseScreen( g2);
 		}
 		
 		collectCraie();

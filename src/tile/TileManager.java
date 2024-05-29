@@ -267,9 +267,6 @@ public class TileManager {
 		}
 	}
 	
-//	IL FAUT ENFT QUE JE FASSE UNE FONCTION QUI VERIFIE LE PIXEL PRECISEMENT LE FRATE
-
-	
 	/**
 	 * Affichage de la carte avec les diff�rentes tuiles
 	 * @param g2

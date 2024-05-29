@@ -49,14 +49,14 @@ public class KeyHandler implements KeyListener{
 		}
 		//Condition sur la touche pause P
 		
-		if (code==80) {
-			if (m_gp.gameState==m_gp.playState) {
-				m_gp.gameState=m_gp.pauseState;
-			}
-			else if (m_gp.gameState==m_gp.pauseState) {
-				m_gp.gameState=m_gp.playState;
-			}
-		}
+//		if (code==80) {
+//			if (m_gp.gameState==m_gp.playState) {
+//				m_gp.gameState=m_gp.pauseState;
+//			}
+//			else if (m_gp.gameState==m_gp.pauseState) {
+//				m_gp.gameState=m_gp.playState;
+//			}
+//		}
 		if(code==37) {
 			entity.Player.gauche=true;
 		}
@@ -79,7 +79,6 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 
-	// Exemple: bander arc en appuyant sur une touche, fleche envoyer quand on lache
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
