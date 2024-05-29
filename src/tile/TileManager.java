@@ -36,7 +36,7 @@ public class TileManager {
 	}
 	
 	/**
-	 * Chargement de toutes les tuiles du jeu
+	 * Chargement de toutes les tuiles du jeu en associant un chiffre à une image
 	 */
 	public void getTileImage() {
 		try {
@@ -139,7 +139,7 @@ public class TileManager {
 	}
 	
 	public void coffeeUpdate() {
-		//La machine à café casse à partir de octobre
+		//La machine à café casse à partir de octobre jusqu'à ce qu'elle soit réparée
 		if(m_gp.currentMonth!="Septembre" && !m_gp.reparationPossible() && m_gp.machineReparee==false) {
 			m_mapTileNum[46][44]=23;
 		} else {

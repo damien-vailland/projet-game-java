@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 
+import java.util.Random;
+
 /**
  * D�fintition du comportement d'un joueur
  *
@@ -18,6 +20,7 @@ public class pnj extends Entity{
 
 	static int nb_student=0;
 	GamePanel m_gp;
+	private int m_indice_pnj = 0;
 	public static List<List<Integer>> m_tab_coordonee_pnj = new ArrayList<>();
 	
 	/**
@@ -26,6 +29,8 @@ public class pnj extends Entity{
 	 * @param a_keyH KeyHandler, gestionnaire des touches 
 	 */
 	public pnj(GamePanel a_gp,int x,int y) {
+        Random random = new Random();
+    	m_indice_pnj = random.nextInt(3);
 		this.m_x=x;
 		this.m_y=y;
 		this.m_gp = a_gp;
@@ -47,7 +52,8 @@ public class pnj extends Entity{
 	public void getPlayerImage() {
 		//gestion des expections 
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-1.png"));
+			m_idleImage = ImageIO.read(getClass().getResource("/player/pnj-" + (m_indice_pnj+1) + ".png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
