@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
 import entity.Player;
 
 import java.awt.BorderLayout;
@@ -24,7 +23,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		long monthDuration = 6 * 1000;
+		long monthDuration = 5 * 1000;
 		long startTime = System.currentTimeMillis();
 		String[] months = {"Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"};
 
@@ -52,7 +51,7 @@ public class Main {
 		Timer timer = new Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				int currentMonthIndex =(int) ((System.currentTimeMillis() - startTime)/monthDuration);
-				if (currentMonthIndex >= months.length || GamePanel.m_player.getPourcentageEnergy() <= 0) {
+				if (currentMonthIndex >= months.length || GamePanel.m_player.getPourcentageSatisfaction() <= 0) {
 					((Timer) evt.getSource()).stop();
 					window.remove(gamePanel);
 					JPanel endPanel = new JPanel();

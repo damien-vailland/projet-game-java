@@ -114,7 +114,7 @@ public class GamePanel extends JPanel implements Runnable{
 	 * Lancement du thread principal
 	 */
 	public int gameState=1;
-	public final int playState =1; 
+	public final static int playState =1; 
 	public final int pauseState=2; 
 	public void startGameThread() {
 		m_gameThread = new Thread(this);
