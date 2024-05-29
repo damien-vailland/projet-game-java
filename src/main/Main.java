@@ -1,5 +1,11 @@
 package main;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import java.awt.BorderLayout;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        long monthDuration = 6 * 1000;
+        long monthDuration = 180 * 1000;
         long startTime = System.currentTimeMillis();
         String[] months = {"Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"};
 

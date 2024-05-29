@@ -267,9 +267,6 @@ public class TileManager {
 		}
 	}
 	
-//	IL FAUT ENFT QUE JE FASSE UNE FONCTION QUI VERIFIE LE PIXEL PRECISEMENT LE FRATE
-
-	
 	/**
 	 * Affichage de la carte avec les diff�rentes tuiles
 	 * @param g2
@@ -374,31 +371,12 @@ public class TileManager {
 						}
 					}
 				}
-//				if(tileNum == 0) {
-//					if(m_mapChoose != 1) {
-//						tileNum = 23;
-//					}
-//				}
 				g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 				x += m_gp.TILE_SIZE;
 			}
 			x = m_gp.scrollOffsetX;
 			y += m_gp.TILE_SIZE;
 		}
-		
-//		while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREE_ROW) {
-//			int tileNum = m_mapTileNum[col][row];
-//			
-//			g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
-//			col ++;
-//			x += m_gp.TILE_SIZE;
-//			if (col == m_gp.MAX_SCREEN_COL) {
-//				col = 0;
-//				row ++;
-//				x = 0;
-//				y += m_gp.TILE_SIZE;
-//			}
-//		}
 		
 	}
 }
