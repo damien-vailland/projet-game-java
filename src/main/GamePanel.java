@@ -59,11 +59,14 @@ public class GamePanel extends JPanel implements Runnable{
 	TileManager m_tileM;
 	add_teachers m_add_prof;
 	add_students m_add_eleve;
-	public static int m_nb_teacher=0;
+
+	public static int m_nb_teacher=1;
+	public static int m_nb_student=1;
+	
+	float coeff_satisfaction=1;
 	List<pnj_mobile> m_pnj_mobile = new ArrayList<>();
 	boolean m_quete1;
 	boolean m_quete2;
-	public static int m_nb_student=0;
 	
 	public String currentMonth = "Septembre";
 	
@@ -153,11 +156,16 @@ public class GamePanel extends JPanel implements Runnable{
 						m_tileM.isWall(650,375),
 						m_tileM.isWall(650,400))
 		;
+		
 		m_tileM.doorUpdate();
 		m_tileM.stairsUpdate(650, 380);
 		collectCoins();
-		entity.add_teachers.ajout_prof();
-		entity.add_students.ajout_eleve();
+		if (add_teachers.nouveau_prof && check_add_prof()) {
+            add_teachers.ajout_prof();
+        }
+        if (add_students.nouvel_eleve && check_add_eleve()) {
+            add_students.ajout_eleve();
+        }
 		m_tileM.coffeeUpdate();
 	}
 		else if (gameState==pauseState) {
@@ -168,32 +176,32 @@ public class GamePanel extends JPanel implements Runnable{
 	/**
 	 * Affichage des �l�ments
 	 */
-	public void drawEnergyBar(Graphics2D g2) {
-	    int energyBarWidth = 200; // Largeur totale de la barre d'énergie
-	    int energyBarHeight = 20; // Hauteur de la barre d'énergie
+	public void drawSatisfactionBar(Graphics2D g2) {
+	    int satisfactionBarWidth = 200; // Largeur totale de la barre d'énergie
+	    int satisfactionBarHeight = 20; // Hauteur de la barre d'énergie
 	    int x = 10; // Position X de la barre d'énergie
 	    int y = 10; // Position Y de la barre d'énergie
 
 	    // Calculer la largeur de la barre d'énergie en fonction de l'énergie du joueur
-	    int currentEnergyWidth = (int) (energyBarWidth * (m_player.getPourcentageEnergy() / 100.0));
+	    int currentSatisfactionWidth = (int) (satisfactionBarWidth * (m_player.getPourcentageSatisfaction() / 100.0));
 
 	    // Dessiner l'arrière-plan de la barre d'énergie (en gris)
 	    g2.setColor(Color.GRAY);
-	    g2.fillRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.fillRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 
 	    // Dessiner la barre d'énergie actuelle (en vert)
 	    g2.setColor(Color.GREEN);
-	    g2.fillRect(x, y, currentEnergyWidth, energyBarHeight);
+	    g2.fillRect(x, y, currentSatisfactionWidth, satisfactionBarHeight);
 
 	    // Dessiner le contour de la barre d'énergie
 	    g2.setColor(Color.BLACK);
-	    g2.drawRect(x, y, energyBarWidth, energyBarHeight);
+	    g2.drawRect(x, y, satisfactionBarWidth, satisfactionBarHeight);
 	    
 	    g2.setColor(Color.BLACK);
 	    String text = "Satisfaction";
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
-	    int textX = x + (energyBarWidth - metrics.stringWidth(text)) / 2;
-	    int textY = y + ((energyBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+	    int textX = x + (satisfactionBarWidth - metrics.stringWidth(text)) / 2;
+	    int textY = y + ((satisfactionBarHeight - metrics.getHeight()) / 2) + metrics.getAscent();
 	    g2.drawString(text, textX, textY);
 	}
 	
@@ -232,19 +240,19 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
     public void updateCurrentMonth(long startTime, long monthDuration, String[] months) {
-    	long temp = System.currentTimeMillis();
-        	int currentMonthIndex = (int) ((temp - startTime) / monthDuration);
-            if (currentMonth != months[currentMonthIndex]) {
-            	currentMonth = months[currentMonthIndex];
-            	int x=-5;
-            	//la barre de vie diminue plus vite lorsque la machine à café est cassée
-            	if(m_tileM.breakCoffee()) {
-            		x*=2;
-            	}
-                m_player.updatePourcentageEnergy(x);
-                entity.coins.add_Coins_to_panel(this,m_tab_coins);
-    			entity.Player.AddCoins(entity.Player.salaire);
-            }
+        int currentMonthIndex = (int) ((System.currentTimeMillis() - startTime) / monthDuration);
+        if (currentMonth != months[currentMonthIndex]) {
+        	currentMonth = months[currentMonthIndex];
+        	coeff_satisfaction=m_nb_teacher/m_nb_student;
+            m_player.updatePourcentageSatisfaction(coeff_satisfaction);
+			int x=-5;
+        	//la barre de vie diminue plus vite lorsque la machine à café est cassée
+        	if(m_tileM.breakCoffee()) {
+        		x*=2;
+        	}
+            entity.coins.add_Coins_to_panel(this,m_tab_coins);
+			entity.Player.AddCoins(entity.Player.salaire);
+        }
     }
 	
     public void drawScore(Graphics2D g2) {
@@ -282,7 +290,7 @@ public class GamePanel extends JPanel implements Runnable{
 		Graphics2D g2 = (Graphics2D) g;
 		m_tileM.draw(g2);
 		m_player.draw(g2);
-		drawEnergyBar(g2);
+		drawSatisfactionBar(g2);
 		drawCurrentMonth(g2, currentMonth);
 		drawScore(g2);
 		drawCoin(g2);
@@ -355,7 +363,7 @@ public class GamePanel extends JPanel implements Runnable{
 //				g2.drawString("Machine réparée!", m_player.m_x, m_player.m_y - 10);
 				m_player.m_coins-=100;
 				machineReparee=true;
-				m_player.updatePourcentageEnergy(10);
+				m_player.updatePourcentageSatisfaction(10);
 				return true;
 			}
 		}
@@ -378,7 +386,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (m_tileM.m_use && inventaire.contains(m_craie) ) {
 				inventaire.remove(m_craie);
 				m_player.updateScore(100);
-				m_player.updatePourcentageEnergy(20);
+				m_player.updatePourcentageSatisfaction(20);
 				m_quete1 = false;
 			}
 			
@@ -413,7 +421,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (m_tileM.m_use) {
 				m_quete2 = false;
 				m_player.updateScore(100);
-				m_player.updatePourcentageEnergy(20);
+				m_player.updatePourcentageSatisfaction(20);
 			}
 		}else {
 			m_pnj_mobile.get(0).pause = true;
@@ -425,5 +433,12 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 
+	public boolean check_add_eleve() {
+	    return m_player.checkCollision(m_add_eleve.m_x, m_add_eleve.m_y, TILE_SIZE);
+	}
+
+	public boolean check_add_prof() {
+	    return m_player.checkCollision(m_add_prof.m_x, m_add_prof.m_y, TILE_SIZE);
+	}
 	
 }
