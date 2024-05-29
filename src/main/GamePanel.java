@@ -385,6 +385,19 @@ public class GamePanel extends JPanel implements Runnable{
 				m_add_prof.draw(g2);
 				m_add_eleve.draw(g2);
 			}
+			drawpnj_004(g2);
+			m_player.draw(g2);
+			drawSatisfactionBar(g2);
+			drawCurrentMonth(g2, currentMonth);
+			drawScore(g2);
+			drawCoin(g2);
+			DialoguePNJ(g2);
+			g2.setColor(Color.WHITE);
+	 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
+			g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
+			g2.drawString("Élève : "+m_nb_student, 0, 125);
+			CoffeeMessage(g2);
+			RappelMission(g2);
 		}
 		
 		if (m_tileM.m_mapChoose == 2) {
@@ -395,21 +408,6 @@ public class GamePanel extends JPanel implements Runnable{
 				pnj.draw(g2);
 			}
 		}
-
-		drawpnj_004(g2);
-		m_player.draw(g2);
-		drawSatisfactionBar(g2);
-		drawCurrentMonth(g2, currentMonth);
-		drawScore(g2);
-		drawCoin(g2);
-		DialoguePNJ(g2);
-		g2.setColor(Color.WHITE);
- 	    g2.setFont(new Font("Arial", Font.BOLD, 20));
-		g2.drawString("Professeur : "+m_nb_teacher, 0, 100);
-		g2.drawString("Élève : "+m_nb_student, 0, 125);
-		CoffeeMessage(g2);
-		RappelMission(g2);
-
 		if (gameState==pauseState) {
 			drawPauseScreen( g2);
 		}
