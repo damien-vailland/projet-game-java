@@ -48,5 +48,5 @@ Il a pour objectif de mettre en œuvre nos compétences en développement orient
 ### Étapes
 
 ```bash
-git clone https://github.com/votre-utilisateur/esir-escape.git
-cd esir-escape
+git clone https://github.com/votre-utilisateur/esir-manager.git
+cd esir-manager
